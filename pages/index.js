@@ -15,14 +15,14 @@ import { ACTION_TYPES, StoreContext } from "../store";
 import { useEffect } from "react";
 import { Wrapper } from "../components/Wrapper";
 import { FaMailBulk } from "react-icons/fa";
-import { Button } from "@chakra-ui/react";
+import { Button, Center } from "@chakra-ui/react";
 
 export default function Home({ licencias, datosBasicos }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
 
-  console.log(session);
-  console.log(status);
+  //console.log(session);
+  //console.log(status);
   useEffect(() => {
     if (datosBasicos) {
       dispatch({
@@ -45,7 +45,7 @@ export default function Home({ licencias, datosBasicos }) {
   if (session) {
     console.log(session?.user?.email, session, status);
     return (
-      <div className={styles.container}>
+      <>
         <Head>
           <title>Licencias Retina Latina</title>
           <meta
@@ -54,7 +54,6 @@ export default function Home({ licencias, datosBasicos }) {
           />
           <link rel="icon" href="/favicon.ico" />
         </Head>
-
         <Wrapper>
           <div className={styles.container}>
             Welcome user
@@ -62,37 +61,21 @@ export default function Home({ licencias, datosBasicos }) {
             <button onClick={() => signOut()}>Sign out</button>
           </div>
         </Wrapper>
-
-        <footer className={styles.footer}>
-          <a
-            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Powered by{" "}
-            <span className={styles.logo}>
-              <Image
-                src="/vercel.svg"
-                alt="Vercel Logo"
-                width={72}
-                height={16}
-              />
-            </span>
-          </a>
-        </footer>
-      </div>
+      </>
     );
   }
   return (
     <Wrapper>
-      <Button
-        rightIcon={<FaMailBulk />}
-        colorScheme="teal"
-        variant="outline"
-        onClick={() => signIn()}
-      >
-        Ingreso a la plataforma de Licencias
-      </Button>
+      <Center color="white" height="50vh">
+        <Button
+          rightIcon={<FaMailBulk />}
+          colorScheme="teal"
+          variant="outline"
+          onClick={() => signIn()}
+        >
+          Ingreso a la plataforma de Licencias
+        </Button>
+      </Center>
     </Wrapper>
   );
 }

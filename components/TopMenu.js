@@ -15,25 +15,27 @@ export const TopMenu = () => {
     state: { elementosMenu },
   } = useContext(StoreContext);
   return (
-    <Menu>
-      <MenuButton
-        as={IconButton}
-        aria-label="Options"
-        icon={<HamburgerIcon />}
-        variant="outline"
-      />
-      <MenuList>
-        <NextLink href="/" passHref>
-          <MenuItem icon={<ExternalLinkIcon />}>Inicio</MenuItem>
-        </NextLink>
+    <>
+      <Menu>
+        <MenuButton
+          as={IconButton}
+          aria-label="Options"
+          icon={<HamburgerIcon />}
+          variant="outline"
+        />
+        <MenuList>
+          <NextLink href="/" passHref>
+            <MenuItem icon={<ExternalLinkIcon />}>Inicio</MenuItem>
+          </NextLink>
 
-        {elementosMenu &&
-          elementosMenu.map((elem) => (
-            <NextLink key={elem[0]} href={`${elem[0]}`} passHref>
-              <MenuItem icon={<ExternalLinkIcon />}>{elem[1]} </MenuItem>
-            </NextLink>
-          ))}
-      </MenuList>
-    </Menu>
+          {elementosMenu &&
+            elementosMenu.map((elem) => (
+              <NextLink key={elem[0]} href={`${elem[0]}`} passHref>
+                <MenuItem icon={<ExternalLinkIcon />}>{elem[1]} </MenuItem>
+              </NextLink>
+            ))}
+        </MenuList>
+      </Menu>
+    </>
   );
 };
