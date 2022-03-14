@@ -1,3 +1,4 @@
+import { getSession } from "next-auth/react";
 import { ACTION_TYPES, StoreContext } from "../store";
 import { useContext } from "react";
 import { useEffect, useState } from "react";
@@ -509,4 +510,17 @@ const PageSettings = (props) => {
   );
 };
 
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  if (!session) {
+    context.res.writeHead(302, { Location: "/" });
+    context.res.end();
+    return {};
+  }
+  return {
+    props: {
+      user: session.user,
+    },
+  };
+}
 export default PageSettings;

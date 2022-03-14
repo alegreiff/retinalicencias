@@ -1,3 +1,5 @@
+import { useSession, signIn, signOut, getSession } from "next-auth/react";
+
 import { useContext } from "react";
 import Head from "next/head";
 import Image from "next/image";
@@ -15,7 +17,14 @@ import { Wrapper } from "../components/Wrapper";
 
 export default function Home({ licencias, datosBasicos }) {
   const { dispatch } = useContext(StoreContext);
-
+  const { data: session, status } = useSession();
+  const y = getSession();
+  console.log(y);
+  useEffect(() => {
+    if (session) {
+      console.log("Truesession", session);
+    }
+  }, [session]);
   useEffect(() => {
     if (datosBasicos) {
       dispatch({
@@ -35,7 +44,55 @@ export default function Home({ licencias, datosBasicos }) {
     }
   }, [licencias, datosBasicos, dispatch]);
 
+  if (session) {
+    console.log(session?.user?.email, session, status);
+    return (
+      <div className={styles.container}>
+        <Head>
+          <title>Licencias Retina Latina</title>
+          <meta
+            name="description"
+            content="Aplicación para uso exclusivo de Retina Latina"
+          />
+          <link rel="icon" href="/favicon.ico" />
+        </Head>
+
+        <Wrapper>
+          <div className={styles.container}>
+            Welcome user
+            <br />
+            <button onClick={() => signOut()}>Sign out</button>
+          </div>
+        </Wrapper>
+
+        <footer className={styles.footer}>
+          <a
+            href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Powered by{" "}
+            <span className={styles.logo}>
+              <Image
+                src="/vercel.svg"
+                alt="Vercel Logo"
+                width={72}
+                height={16}
+              />
+            </span>
+          </a>
+        </footer>
+      </div>
+    );
+  }
   return (
+    <Wrapper>
+      Click to sign into your user account <br />
+      <button onClick={() => signIn()}>Sign in</button>
+    </Wrapper>
+  );
+
+  /* return (
     <div className={styles.container}>
       <Head>
         <title>Licencias Retina Latina</title>
@@ -47,10 +104,11 @@ export default function Home({ licencias, datosBasicos }) {
       </Head>
 
       <Wrapper>
-        {datosBasicos[0] &&
-          datosBasicos[0].map((dato, i) => {
-            return <div key={i}> {dato} </div>;
-          })}
+<div className={styles.container}>
+        Welcome user
+        <br />
+        <button onClick={() => signOut()}>Sign out</button>
+      </div>
       </Wrapper>
 
       <footer className={styles.footer}>
@@ -66,7 +124,7 @@ export default function Home({ licencias, datosBasicos }) {
         </a>
       </footer>
     </div>
-  );
+  ); */
 }
 
 export async function getServerSideProps() {

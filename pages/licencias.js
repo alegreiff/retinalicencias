@@ -1,3 +1,5 @@
+import { getSession } from "next-auth/react";
+
 import React, { useContext, useEffect, useState, useMemo } from "react";
 import { Wrapper } from "../components/Wrapper";
 import {
@@ -161,42 +163,49 @@ const PageLicencias = ({ resultado }) => {
 
 export default PageLicencias;
 
-export async function getServerSideProps() {
-  const auth = authGoogle;
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  if (!session) {
+    context.res.writeHead(302, { Location: "/" });
+    context.res.end();
+    return {};
+  } else {
+    const auth = authGoogle;
 
-  const cargaLicencias = await googleSheets.spreadsheets.values.get({
-    auth,
-    spreadsheetId: hojaLicenciasRetina,
-    range: "matriz!A2:O",
-  });
+    const cargaLicencias = await googleSheets.spreadsheets.values.get({
+      auth,
+      spreadsheetId: hojaLicenciasRetina,
+      range: "matriz!A2:O",
+    });
 
-  const licencias = cargaLicencias.data.values
-    ? cargaLicencias.data.values
-    : [];
+    const licencias = cargaLicencias.data.values
+      ? cargaLicencias.data.values
+      : [];
 
-  let resultado = [];
-  const y = Moment("13-03-2022 0:00", "DD-MM-YYYY HH:mm").format(
-    "MMMM D, YYYY HH:MM"
-  );
-
-  licencias.forEach((licencia) => {
-    const fecha = Moment(licencia[1], "DD-MM-YYYY HH:mm").format(
-      "MMMM D, YYYY"
+    let resultado = [];
+    const y = Moment("13-03-2022 0:00", "DD-MM-YYYY HH:mm").format(
+      "MMMM D, YYYY HH:MM"
     );
 
-    resultado.push({
-      id: Number(licencia[0]),
-      fechacreacion: fecha,
-      autor: licencia[2],
-      pelicula: licencia[3],
-      pais: licencia[4],
-      tipocontenido: licencia[5],
-      formaadquisicion: licencia[6],
-    });
-  });
-  resultado = orderBy(resultado, ["fechacreacion"], ["desc"]);
+    licencias.forEach((licencia) => {
+      const fecha = Moment(licencia[1], "DD-MM-YYYY HH:mm").format(
+        "MMMM D, YYYY"
+      );
 
-  return {
-    props: { resultado },
-  };
+      resultado.push({
+        id: Number(licencia[0]),
+        fechacreacion: fecha,
+        autor: licencia[2],
+        pelicula: licencia[3],
+        pais: licencia[4],
+        tipocontenido: licencia[5],
+        formaadquisicion: licencia[6],
+      });
+    });
+    resultado = orderBy(resultado, ["fechacreacion"], ["desc"]);
+
+    return {
+      props: { resultado },
+    };
+  }
 }
