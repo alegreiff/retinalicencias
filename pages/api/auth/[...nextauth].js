@@ -10,10 +10,10 @@ export default NextAuth({
       clientSecret: process.env.GOOGLE_SECRET,
     }),
   ],
-  adapter: FirebaseAdapter({
+  /* adapter: FirebaseAdapter({
     db,
     ...firestoreFunctions,
-  }),
+  }), */
   secret: process.env.SECRET,
   callbacks: {
     async signIn({ account, profile, user }) {
