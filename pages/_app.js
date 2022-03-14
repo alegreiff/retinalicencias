@@ -4,10 +4,10 @@ import StoreProvider from "../store";
 import "../styles/globals.css";
 
 //function MyApp({ Component, pageProps }) {
-function MyApp({ Component, pageProps: { session, ...pageProps } }) {
-  //function MyApp({ session, Component, pageProps }) {
+//function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+function MyApp({ Component, pageProps }) {
   return (
-    <SessionProvider session={session}>
+    <SessionProvider session={pageProps.session}>
       <ChakraProvider>
         <StoreProvider>
           <Component {...pageProps} />

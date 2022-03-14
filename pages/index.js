@@ -1,4 +1,4 @@
-import { useSession, signIn, signOut, getSession } from "next-auth/react";
+import { useSession, signIn, signOut } from "next-auth/react";
 
 import { useContext } from "react";
 import Head from "next/head";
@@ -14,17 +14,15 @@ import styles from "../styles/Home.module.css";
 import { ACTION_TYPES, StoreContext } from "../store";
 import { useEffect } from "react";
 import { Wrapper } from "../components/Wrapper";
+import { FaMailBulk } from "react-icons/fa";
+import { Button } from "@chakra-ui/react";
 
 export default function Home({ licencias, datosBasicos }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
-  const y = getSession();
-  console.log(y);
-  useEffect(() => {
-    if (session) {
-      console.log("Truesession", session);
-    }
-  }, [session]);
+
+  console.log(session);
+  console.log(status);
   useEffect(() => {
     if (datosBasicos) {
       dispatch({
@@ -87,44 +85,16 @@ export default function Home({ licencias, datosBasicos }) {
   }
   return (
     <Wrapper>
-      Click to sign into your user account <br />
-      <button onClick={() => signIn()}>Sign in</button>
+      <Button
+        rightIcon={<FaMailBulk />}
+        colorScheme="teal"
+        variant="outline"
+        onClick={() => signIn()}
+      >
+        Ingreso a la plataforma de Licencias
+      </Button>
     </Wrapper>
   );
-
-  /* return (
-    <div className={styles.container}>
-      <Head>
-        <title>Licencias Retina Latina</title>
-        <meta
-          name="description"
-          content="Aplicación para uso exclusivo de Retina Latina"
-        />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      <Wrapper>
-<div className={styles.container}>
-        Welcome user
-        <br />
-        <button onClick={() => signOut()}>Sign out</button>
-      </div>
-      </Wrapper>
-
-      <footer className={styles.footer}>
-        <a
-          href="https://vercel.com?utm_source=create-next-app&utm_medium=default-template&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Powered by{" "}
-          <span className={styles.logo}>
-            <Image src="/vercel.svg" alt="Vercel Logo" width={72} height={16} />
-          </span>
-        </a>
-      </footer>
-    </div>
-  ); */
 }
 
 export async function getServerSideProps() {

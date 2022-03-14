@@ -1,4 +1,4 @@
-import { getSession } from "next-auth/react";
+import { getSession, useSession } from "next-auth/react";
 import { ACTION_TYPES, StoreContext } from "../store";
 import { useContext } from "react";
 import { useEffect, useState } from "react";
@@ -35,6 +35,14 @@ import es from "date-fns/locale/es";
 registerLocale("es", es);
 
 const PageSettings = (props) => {
+  const { data: session, status } = useSession();
+  const [autor, setAutor] = useState("");
+  console.log(session?.user?.email);
+  useEffect(() => {
+    if (session?.user?.email) {
+      setAutor(session.user.email);
+    }
+  }, [session.user.email]);
   const { isOpen, onOpen, onClose } = useDisclosure();
   const router = useRouter();
   const toast = useToast();
@@ -50,9 +58,7 @@ const PageSettings = (props) => {
   };
   const guardaLicencia = async (values) => {
     console.log(values, startDate, endDate);
-    return;
 
-    const autor = "TheQueen";
     try {
       const {
         nombrepelicula,
@@ -103,7 +109,7 @@ const PageSettings = (props) => {
   const {
     state: { datosLicencias },
   } = useContext(StoreContext);
-  const [muestraInfo, setMuestraInfo] = useState(true);
+  const [muestraInfo, setMuestraInfo] = useState(false);
   const [paises, setPaises] = useState([]);
   const [tipoCont, setTipoCont] = useState(datosLicencias[1]);
   const [formAdq, setFormAdq] = useState(datosLicencias[2]);

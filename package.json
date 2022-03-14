@@ -13,6 +13,8 @@
     "@chakra-ui/react": "^1.8.6",
     "@emotion/react": "^11",
     "@emotion/styled": "^11",
+    "@next-auth/firebase-adapter": "^0.1.2-pr.183-76202b42.8",
+    "firebase": "^9.6.8",
     "formik": "^2.2.9",
     "framer-motion": "^6",
     "googleapis": "^95.0.0",
