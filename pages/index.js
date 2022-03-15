@@ -55,11 +55,16 @@ export default function Home({ licencias, datosBasicos }) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Wrapper>
-          <div className={styles.container}>
-            Welcome user
-            <br />
-            <button onClick={() => signOut()}>Sign out</button>
-          </div>
+          <Center color="white" height="50vh">
+            <Button
+              rightIcon={<FaMailBulk />}
+              colorScheme="teal"
+              variant="outline"
+              onClick={() => signOut()}
+            >
+              Cerrar sesión
+            </Button>
+          </Center>
         </Wrapper>
       </>
     );

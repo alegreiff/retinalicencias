@@ -1,40 +1,20 @@
-import { Box, Button, useDisclosure, useToast } from "@chakra-ui/react";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
+import { getSession, useSession } from "next-auth/react";
+import { ACTION_TYPES, StoreContext } from "../store";
+import { useContext } from "react";
+import { useEffect, useState } from "react";
 import useSWR from "swr";
 import { fetcher } from "../lib";
-import { ACTION_TYPES, StoreContext } from "../store";
-import { FormularioLicencias } from "./forms/FormularioLicencias";
+import { Wrapper } from "../components/Wrapper";
+import { Modal, ModalOverlay, useDisclosure } from "@chakra-ui/react";
+import Head from "next/head";
 
-export const EditaLicencia = ({ licencia }) => {
-  console.log("LICCCE", licencia);
-  const {
-    nombrepelicula,
-    pais,
-    tipocontenido,
-    formaAdquisicion,
-    entidadgratis,
-    geobloqueo: geobl,
-    mododuracion,
-    comentarios,
-    entidad,
-    entidadpais,
-  } = licencia;
+import { useToast } from "@chakra-ui/react";
 
-  const valoresInicialesFormulario = {
-    nombrepelicula,
-    pais,
-    tipocontenido,
-    formaAdquisicion,
-    entidadgratis,
-    geobloqueo: geobl,
-    mododuracion,
-    comentarios,
-    entidad,
-    entidadpais,
-  };
+import { useRouter } from "next/router";
+import { EntidadGratuitaNueva } from "../components/licencias/EntidadGratuitaNueva";
+import { FormularioLicencias } from "../components/forms/FormularioLicencias";
 
+const PageSettings = (props) => {
   const { data: session } = useSession();
   const [autor, setAutor] = useState("");
 
@@ -56,6 +36,18 @@ export const EditaLicencia = ({ licencia }) => {
       isClosable: true,
     });
     router.push("/licencias");
+  };
+
+  const valoresInicialesFormulario = {
+    nombrepelicula: "",
+    pais: "",
+    tipocontenido: "",
+    formaAdquisicion: "",
+    entidadpais: "",
+    entidadgratis: "",
+    geobloqueo: "",
+    mododuracion: "",
+    comentarios: "",
   };
 
   const guardaLicencia = async (values) => {
@@ -119,7 +111,6 @@ export const EditaLicencia = ({ licencia }) => {
   const [entidadesGratis, setEntidadesGratis] = useState(false);
   const [listaEntidadesPais, setListaEntidadesPais] = useState([]);
   const [listaEntidadesGratuitas, setListaEntidadesGratuitas] = useState([]);
-  const [edicionEntidadPais, setEdicionEntidadPais] = useState(false);
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
@@ -217,87 +208,64 @@ export const EditaLicencia = ({ licencia }) => {
     }
     onClose();
   };
-  useEffect(() => {
-    if (formaAdquisicion) {
-      if (formaAdquisicion === "Compra") {
-        setEdicionEntidadPais(true);
-        setEntidadesPais(true);
-        setEntidadesGratis(false);
-        setListaEntidadesGratuitas([]);
-        setPaises(datosLicencias[3]);
-      } else {
-        setEdicionEntidadPais(false);
-        setEntidadesPais(false);
-        setEntidadesGratis(true);
-        setListaEntidadesGratuitas(datosLicencias[10]);
-        setPaises(datosLicencias[0]);
-      }
-    }
-  }, [datosLicencias, formaAdquisicion]);
-
-  useEffect(() => {
-    if (pais) {
-      if (retinaPaises.includes(pais)) {
-        switch (pais) {
-          case "Bolivia": {
-            setListaEntidadesPais(datosLicencias[4]);
-            break;
-          }
-          case "Colombia": {
-            setListaEntidadesPais(datosLicencias[5]);
-            break;
-          }
-          case "Ecuador": {
-            setListaEntidadesPais(datosLicencias[6]);
-            break;
-          }
-          case "México": {
-            setListaEntidadesPais(datosLicencias[7]);
-            break;
-          }
-          case "Perú": {
-            setListaEntidadesPais(datosLicencias[8]);
-            break;
-          }
-          case "Uruguay": {
-            setListaEntidadesPais(datosLicencias[9]);
-            break;
-          }
-          default: {
-            setListaEntidadesPais([]);
-          }
-        }
-      } else {
-        setListaEntidadesPais([]);
-      }
-    }
-  }, []);
 
   return (
-    <Box>
-      <FormularioLicencias
-        valoresInicialesFormulario={valoresInicialesFormulario}
-        tipoCont={tipoCont}
-        formAdq={formAdq}
-        paises={paises}
-        listaEntidadesPais={listaEntidadesPais}
-        entidadesGratis={entidadesGratis}
-        entidadesPais={entidadesPais}
-        geobloqueo={geobloqueo}
-        modoDuracion={modoDuracion}
-        startDate={startDate}
-        endDate={endDate}
-        difDias={difDias}
-        muestraInfo={muestraInfo}
-        onChangeFormaAdquisicion={onChangeFormaAdquisicion}
-        listaEntidadesGratuitas={listaEntidadesGratuitas}
-        onOpen={onOpen}
-        onClose={onClose}
-        onChangePais={onChangePais}
-        guardaLicencia={guardaLicencia}
-        edicionEntidadPais
-        entidadpaisselected={0}
-      />
-    </Box>
+    <>
+      <Head>
+        <title>Gestión de licencias</title>
+      </Head>
+      <Wrapper>
+        <Modal
+          isOpen={isOpen}
+          onClose={cierraModal}
+          closeOnEsc={false}
+          closeOnOverlayClick={false}
+        >
+          <ModalOverlay />
+          <EntidadGratuitaNueva
+            onClose={cierraModal}
+            listaEntidadesGratuitas={listaEntidadesGratuitas}
+            rango="K"
+          />
+        </Modal>
+
+        <FormularioLicencias
+          valoresInicialesFormulario={valoresInicialesFormulario}
+          tipoCont={tipoCont}
+          formAdq={formAdq}
+          paises={paises}
+          listaEntidadesPais={listaEntidadesPais}
+          entidadesGratis={entidadesGratis}
+          entidadesPais={entidadesPais}
+          geobloqueo={geobloqueo}
+          modoDuracion={modoDuracion}
+          startDate={startDate}
+          endDate={endDate}
+          difDias={difDias}
+          muestraInfo={muestraInfo}
+          onChangeFormaAdquisicion={onChangeFormaAdquisicion}
+          listaEntidadesGratuitas={listaEntidadesGratuitas}
+          onOpen={onOpen}
+          onClose={onClose}
+          onChangePais={onChangePais}
+          guardaLicencia={guardaLicencia}
+        />
+      </Wrapper>
+    </>
   );
 };
+
+export async function getServerSideProps(context) {
+  const session = await getSession(context);
+  if (!session) {
+    context.res.writeHead(302, { Location: "/" });
+    context.res.end();
+    return {};
+  }
+  return {
+    props: {
+      user: session.user,
+    },
+  };
+}
+export default PageSettings;

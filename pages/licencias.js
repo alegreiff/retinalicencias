@@ -40,9 +40,10 @@ const PageLicencias = ({ resultado }) => {
     const licencia = resultado.find(
       (res) => res.id.toString() === id.toString()
     );
+    console.log("LICENCIA QUE VA", licencia);
 
     setActivo(licencia);
-    console.log("ACTIVO", licencia);
+    //console.log("ACTIVO", licencia);
     onOpen();
   };
 
@@ -74,7 +75,7 @@ const PageLicencias = ({ resultado }) => {
       { Header: "Code", accessor: "id" },
       { Header: "Creación", accessor: "fechacreacion" },
       //{ Header: "Autor", accessor: "autor" },
-      { Header: "Película", accessor: "pelicula" },
+      { Header: "Película", accessor: "nombrepelicula" },
       { Header: "País", accessor: "pais" },
       //{ Header: "Tipo", accessor: "tipocontenido" },
       { Header: "Adquisición", accessor: "formaadquisicion" },
@@ -97,7 +98,7 @@ const PageLicencias = ({ resultado }) => {
           <DrawerOverlay />
           <DrawerContent>
             <DrawerCloseButton />
-            <DrawerHeader>{activo.pelicula}</DrawerHeader>
+            <DrawerHeader>{activo.nombrepelicula}</DrawerHeader>
 
             <DrawerBody>
               <EditaLicencia licencia={activo} />
@@ -155,7 +156,7 @@ const PageLicencias = ({ resultado }) => {
             })}
           </Tbody>
         </Table>
-        {activo && <span>{activo.pelicula}</span>}
+        {activo && <span>{activo.nombrepelicula}</span>}
       </Wrapper>
     </>
   );
@@ -191,15 +192,28 @@ export async function getServerSideProps(context) {
       const fecha = Moment(licencia[1], "DD-MM-YYYY HH:mm").format(
         "MMMM D, YYYY"
       );
+      let entidadpais = "";
+      let entidadgratis = "";
+      if (licencia[6] === "Compra") {
+        entidadpais = licencia[7];
+      } else {
+        entidadgratis = licencia[7];
+      }
 
       resultado.push({
         id: Number(licencia[0]),
         fechacreacion: fecha,
         autor: licencia[2],
-        pelicula: licencia[3],
+        nombrepelicula: licencia[3],
         pais: licencia[4],
         tipocontenido: licencia[5],
-        formaadquisicion: licencia[6],
+        formaAdquisicion: licencia[6],
+        entidad: licencia[7],
+        geobloqueo: licencia[8],
+        mododuracion: licencia[9] ? licencia[9] : "",
+        comentarios: licencia[12] ? licencia[12] : "SINOBSERVACIONES GONORREA",
+        entidadpais: entidadpais,
+        entidadgratis: entidadgratis,
       });
     });
     resultado = orderBy(resultado, ["fechacreacion"], ["desc"]);

@@ -29,7 +29,7 @@ const StoreProvider = ({ children }) => {
     licencias: [],
     datosLicencias: [],
     elementosMenu: [
-      ["/settings", "Retina"],
+      ["/nueva", "Crear nueva licencia"],
       ["/licencias", "Licencias"],
     ],
   };
