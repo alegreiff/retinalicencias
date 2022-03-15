@@ -40,8 +40,9 @@ export const FormularioLicencias = ({
   onClose,
   onChangePais,
   guardaLicencia,
-  edicionEntidadPais = false,
-  entidadpaisselected = null,
+  esEdicion = false,
+  //edicionEntidadPais = false,
+  //entidadpaisselected = null,
 }) => {
   console.log("PELICULAQUELLEGA", valoresInicialesFormulario);
   return (
@@ -58,7 +59,7 @@ export const FormularioLicencias = ({
           as="form"
           mx="auto"
           w={{ base: "90%", md: 900 }}
-          h="100vh"
+          //h="100vh"
           justifyContent="flex-start"
           onSubmit={formik.handleSubmit}
         >
@@ -205,7 +206,7 @@ export const FormularioLicencias = ({
           </FormControl>
 
           <Button type="submit" variant="outline" colorScheme="teal" size="lg">
-            Crear licencia básica
+            {esEdicion ? "Modificar licencia" : "Crear licencia básica"}
           </Button>
           {muestraInfo && (
             <>

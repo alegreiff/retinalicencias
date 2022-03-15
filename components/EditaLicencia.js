@@ -60,7 +60,7 @@ export const EditaLicencia = ({ licencia }) => {
 
   const guardaLicencia = async (values) => {
     console.log(values, startDate, endDate);
-
+    return;
     try {
       const {
         nombrepelicula,
@@ -295,8 +295,9 @@ export const EditaLicencia = ({ licencia }) => {
         onClose={onClose}
         onChangePais={onChangePais}
         guardaLicencia={guardaLicencia}
-        edicionEntidadPais
-        entidadpaisselected={0}
+        //edicionEntidadPais
+        //entidadpaisselected={0}
+        esEdicion={true}
       />
     </Box>
   );

@@ -93,12 +93,14 @@ const PageLicencias = ({ resultado }) => {
           placement="top"
           onClose={cierraDrawer}
           finalFocusRef={btnRef}
-          size="lg"
+          size="md"
         >
           <DrawerOverlay />
           <DrawerContent>
             <DrawerCloseButton />
-            <DrawerHeader>{activo.nombrepelicula}</DrawerHeader>
+            <DrawerHeader>
+              Edición de la licencia de: {activo.nombrepelicula}
+            </DrawerHeader>
 
             <DrawerBody>
               <EditaLicencia licencia={activo} />
@@ -211,7 +213,7 @@ export async function getServerSideProps(context) {
         entidad: licencia[7],
         geobloqueo: licencia[8],
         mododuracion: licencia[9] ? licencia[9] : "",
-        comentarios: licencia[12] ? licencia[12] : "SINOBSERVACIONES GONORREA",
+        comentarios: licencia[12] ? licencia[12] : "",
         entidadpais: entidadpais,
         entidadgratis: entidadgratis,
       });
