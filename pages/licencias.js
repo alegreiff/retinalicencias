@@ -214,6 +214,8 @@ export async function getServerSideProps(context) {
         geobloqueo: licencia[8],
         mododuracion: licencia[9] ? licencia[9] : "",
         comentarios: licencia[12] ? licencia[12] : "",
+        startDate: licencia[10] ? licencia[10] : "",
+        endDate: licencia[11] ? licencia[11] : "",
         entidadpais: entidadpais,
         entidadgratis: entidadgratis,
       });

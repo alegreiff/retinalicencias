@@ -1,4 +1,5 @@
 import { Box, Button, useDisclosure, useToast } from "@chakra-ui/react";
+import moment from "moment";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
 import React, { useContext, useEffect, useState } from "react";
@@ -8,6 +9,10 @@ import { ACTION_TYPES, StoreContext } from "../store";
 import { FormularioLicencias } from "./forms/FormularioLicencias";
 
 export const EditaLicencia = ({ licencia }) => {
+  const stringToDate = (dateString) => {
+    const [day, month, year] = dateString.split("/");
+    return new Date([month, day, year].join("/"));
+  };
   console.log("LICCCE", licencia);
   const {
     nombrepelicula,
@@ -20,6 +25,8 @@ export const EditaLicencia = ({ licencia }) => {
     comentarios,
     entidad,
     entidadpais,
+    startDate: _startDate,
+    endDate: _endDate,
   } = licencia;
 
   const valoresInicialesFormulario = {
@@ -33,7 +40,11 @@ export const EditaLicencia = ({ licencia }) => {
     comentarios,
     entidad,
     entidadpais,
+    startDate: _startDate ? stringToDate(_startDate) : new Date(),
+    endDate: _endDate ? stringToDate(_endDate) : new Date(),
   };
+  console.log("fechaInicial", _startDate);
+  console.log("INITIAL FORM DATA", valoresInicialesFormulario);
 
   const { data: session } = useSession();
   const [autor, setAutor] = useState("");
@@ -121,9 +132,15 @@ export const EditaLicencia = ({ licencia }) => {
   const [listaEntidadesGratuitas, setListaEntidadesGratuitas] = useState([]);
   const [edicionEntidadPais, setEdicionEntidadPais] = useState(false);
 
-  const [startDate, setStartDate] = useState(new Date());
-  const [endDate, setEndDate] = useState(new Date());
+  //const [startDate, setStartDate] = useState(new Date());
+  //const [endDate, setEndDate] = useState(new Date());
+  const [startDate, setStartDate] = useState(
+    valoresInicialesFormulario.startDate
+  );
+  const [endDate, setEndDate] = useState(valoresInicialesFormulario.endDate);
   const [difDias, setDifDias] = useState("");
+
+  console.log("INIT", startDate);
 
   const [stateDatosLicencias, setStateDatosLicencias] =
     useState(datosLicencias);
@@ -298,6 +315,8 @@ export const EditaLicencia = ({ licencia }) => {
         //edicionEntidadPais
         //entidadpaisselected={0}
         esEdicion={true}
+        setEndDate={setEndDate}
+        setStartDate={setStartDate}
       />
     </Box>
   );

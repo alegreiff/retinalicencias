@@ -15,7 +15,7 @@ import { ACTION_TYPES, StoreContext } from "../store";
 import { useEffect } from "react";
 import { Wrapper } from "../components/Wrapper";
 import { FaMailBulk } from "react-icons/fa";
-import { Button, Center } from "@chakra-ui/react";
+import { Box, Button, Center } from "@chakra-ui/react";
 
 export default function Home({ licencias, datosBasicos }) {
   const { dispatch } = useContext(StoreContext);
@@ -55,6 +55,9 @@ export default function Home({ licencias, datosBasicos }) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Wrapper>
+          <Box bg="tomato" w="100%" p={4} color="white">
+            Versión 0.51
+          </Box>
           <Center color="white" height="50vh">
             <Button
               rightIcon={<FaMailBulk />}
@@ -71,6 +74,9 @@ export default function Home({ licencias, datosBasicos }) {
   }
   return (
     <Wrapper>
+      <Box bg="tomato" w="100%" p={4} color="white">
+        Versión 0.51
+      </Box>
       <Center color="white" height="50vh">
         <Button
           rightIcon={<FaMailBulk />}

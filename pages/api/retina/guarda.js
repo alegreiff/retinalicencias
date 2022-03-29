@@ -1,6 +1,8 @@
+import moment from "moment";
 import { authGoogle, googleSheets, hojaLicenciasRetina } from "../../../sheets";
 
 const handler = async (req, res) => {
+  moment;
   if (req.method === "POST") {
     let date = new Date();
     let day = `0${date.getDate()}`.slice(-2); //("0"+date.getDate()).slice(-2);
@@ -23,6 +25,9 @@ const handler = async (req, res) => {
       mododuracion,
       comentarios,
     } = req.body;
+    let { startDate, endDate } = req.body;
+    startDate = moment(startDate).format("DD/MM/YYYY");
+    endDate = moment(endDate).format("DD/MM/YYYY");
 
     const auth = authGoogle;
     const spreadsheetId = hojaLicenciasRetina;
@@ -55,8 +60,8 @@ const handler = async (req, res) => {
             entidad,
             geobloqueo,
             mododuracion,
-            "",
-            "",
+            startDate,
+            endDate,
             comentarios,
           ],
         ],

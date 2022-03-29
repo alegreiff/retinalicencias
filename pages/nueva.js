@@ -83,6 +83,8 @@ const PageSettings = (props) => {
           entidad,
           geobloqueo,
           mododuracion,
+          startDate,
+          endDate,
           comentarios,
         }),
       });
@@ -249,6 +251,8 @@ const PageSettings = (props) => {
           onClose={onClose}
           onChangePais={onChangePais}
           guardaLicencia={guardaLicencia}
+          setEndDate={setEndDate}
+          setStartDate={setStartDate}
         />
       </Wrapper>
     </>

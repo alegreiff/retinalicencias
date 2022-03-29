@@ -41,6 +41,8 @@ export const FormularioLicencias = ({
   onChangePais,
   guardaLicencia,
   esEdicion = false,
+  setEndDate,
+  setStartDate,
   //edicionEntidadPais = false,
   //entidadpaisselected = null,
 }) => {
