@@ -21,3 +21,33 @@ const CampoTexto = ({ label, ...props }) => {
 };
 
 export default CampoTexto;
+
+/* 
+
+<FormControl id="numeroduracion">
+                      <FormLabel htmlFor="numeroduracion">
+                        {formik.values.nombreduracion}
+                      </FormLabel>
+                      <NumberInput
+                        min={1}
+                        max={formik.values.nombreduracion === "Años" ? 5 : 30}
+                        id="numeroduracion "
+                        {...field}
+                        onChange={(val) => form.setFieldValue(field.name, val)}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+
+                      {!formik.isValid && formik.errors.numeroduracion ? (
+                        <FormErrorMessage>
+                          {formik.errors.numeroduracion}
+                        </FormErrorMessage>
+                      ) : (
+                        ""
+                      )}
+                    </FormControl>
+*/

@@ -48,10 +48,13 @@ const PageSettings = (props) => {
     geobloqueo: "",
     mododuracion: "",
     comentarios: "",
+    numeroduracion: "",
+    nombreduracion: "",
   };
 
   const guardaLicencia = async (values) => {
     console.log(values, startDate, endDate);
+    //return;
 
     try {
       const {
@@ -62,6 +65,8 @@ const PageSettings = (props) => {
         geobloqueo,
         mododuracion,
         comentarios,
+        nombreduracion,
+        numeroduracion,
       } = values;
       const entidad = "";
       if (values.entidadpais === "") {
@@ -86,10 +91,13 @@ const PageSettings = (props) => {
           startDate,
           endDate,
           comentarios,
+          nombreduracion,
+          numeroduracion,
         }),
       });
 
       const res = await response.json();
+      return; //PROVISIONAL
       if (res) {
         exitoCarga(nombrepelicula, res.resultado, "success");
       }
@@ -102,21 +110,24 @@ const PageSettings = (props) => {
   const {
     state: { datosLicencias },
   } = useContext(StoreContext);
-  const [muestraInfo, setMuestraInfo] = useState(false);
+  const [muestraInfo, setMuestraInfo] = useState(true);
   const [paises, setPaises] = useState([]);
   const [tipoCont, setTipoCont] = useState(datosLicencias[1]);
   const [formAdq, setFormAdq] = useState(datosLicencias[2]);
   const [retinaPaises, setRetinaPaises] = useState(datosLicencias[3]);
   const [geobloqueo, setGeobloqueo] = useState(datosLicencias[11]);
   const [modoDuracion, setModoDuracion] = useState(datosLicencias[12]);
+  const [auxModoDuracion, setAuxModoDuracion] = useState(datosLicencias[13]);
   const [entidadesPais, setEntidadesPais] = useState(false);
   const [entidadesGratis, setEntidadesGratis] = useState(false);
   const [listaEntidadesPais, setListaEntidadesPais] = useState([]);
   const [listaEntidadesGratuitas, setListaEntidadesGratuitas] = useState([]);
+  const [muestraFechas, setMuestraFechas] = useState(false);
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
   const [difDias, setDifDias] = useState("");
+  const [detalleFechas, setDetalleFechas] = useState(null);
 
   const [stateDatosLicencias, setStateDatosLicencias] =
     useState(datosLicencias);
@@ -148,6 +159,7 @@ const PageSettings = (props) => {
       setRetinaPaises(dataStateDatosLicencias.data[3]);
       setGeobloqueo(dataStateDatosLicencias.data[11]);
       setModoDuracion(dataStateDatosLicencias.data[12]);
+      setAuxModoDuracion(dataStateDatosLicencias.data[13]);
       setStateDatosLicencias(dataStateDatosLicencias.data);
     }
   }, [dispatch, dataStateDatosLicencias]);
@@ -211,11 +223,36 @@ const PageSettings = (props) => {
     onClose();
   };
 
+  const onChangeDuracionLicencia = (value) => {
+    if (!value) {
+      setDetalleFechas(null);
+      return;
+    }
+
+    const indice = modoDuracion.indexOf(value);
+    const detalle = auxModoDuracion[indice];
+    if (detalle) {
+      setDetalleFechas(detalle);
+    } else {
+      setDetalleFechas(null);
+    }
+  };
+  useEffect(() => {
+    if (detalleFechas === "FF") {
+      setMuestraFechas(true);
+    } else {
+      setMuestraFechas(false);
+    }
+  }, [detalleFechas]);
+
   return (
     <>
       <Head>
         <title>Gestión de licencias</title>
       </Head>
+      <pre>
+        <code>(MODO DURACIÓN) {JSON.stringify(modoDuracion[0], null, 5)}</code>
+      </pre>
       <Wrapper>
         <Modal
           isOpen={isOpen}
@@ -253,6 +290,9 @@ const PageSettings = (props) => {
           guardaLicencia={guardaLicencia}
           setEndDate={setEndDate}
           setStartDate={setStartDate}
+          muestraFechas={muestraFechas}
+          onChangeDuracionLicencia={onChangeDuracionLicencia}
+          detalleFechas={detalleFechas}
         />
       </Wrapper>
     </>

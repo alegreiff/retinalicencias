@@ -25,9 +25,21 @@ const handler = async (req, res) => {
       mododuracion,
       comentarios,
     } = req.body;
+    let { nombreduracion, numeroduracion } = req.body;
     let { startDate, endDate } = req.body;
-    startDate = moment(startDate).format("DD/MM/YYYY");
-    endDate = moment(endDate).format("DD/MM/YYYY");
+
+    if (nombreduracion.length > 0 && numeroduracion > 0) {
+      startDate = "";
+      endDate = "";
+    } else {
+      nombreduracion = "Días";
+      numeroduracion = moment(endDate).diff(startDate, "days");
+      startDate = moment(startDate).format("DD/MM/YYYY");
+      endDate = moment(endDate).format("DD/MM/YYYY");
+    }
+
+    console.log("NAME", nombreduracion);
+    console.log("DATTA", numeroduracion);
 
     const auth = authGoogle;
     const spreadsheetId = hojaLicenciasRetina;
@@ -62,6 +74,8 @@ const handler = async (req, res) => {
             mododuracion,
             startDate,
             endDate,
+            nombreduracion,
+            numeroduracion,
             comentarios,
           ],
         ],

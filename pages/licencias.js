@@ -213,7 +213,7 @@ export async function getServerSideProps(context) {
         entidad: licencia[7],
         geobloqueo: licencia[8],
         mododuracion: licencia[9] ? licencia[9] : "",
-        comentarios: licencia[12] ? licencia[12] : "",
+        comentarios: licencia[14] ? licencia[14] : "",
         startDate: licencia[10] ? licencia[10] : "",
         endDate: licencia[11] ? licencia[11] : "",
         entidadpais: entidadpais,

@@ -55,8 +55,8 @@ export default function Home({ licencias, datosBasicos }) {
           <link rel="icon" href="/favicon.ico" />
         </Head>
         <Wrapper>
-          <Box bg="tomato" w="100%" p={4} color="white">
-            Versión 0.51
+          <Box bg="purple" w="100%" p={4} color="white">
+            Versión 0.54
           </Box>
           <Center color="white" height="50vh">
             <Button
@@ -74,8 +74,8 @@ export default function Home({ licencias, datosBasicos }) {
   }
   return (
     <Wrapper>
-      <Box bg="tomato" w="100%" p={4} color="white">
-        Versión 0.51
+      <Box bg="purple" w="100%" p={4} color="white">
+        Versión 0.54
       </Box>
       <Center color="white" height="50vh">
         <Button

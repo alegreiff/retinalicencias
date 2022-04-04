@@ -2,14 +2,21 @@ import {
   Badge,
   Button,
   FormControl,
+  FormErrorMessage,
+  FormHelperText,
   FormLabel,
   Heading,
   Input,
+  NumberDecrementStepper,
+  NumberIncrementStepper,
+  NumberInput,
+  NumberInputField,
+  NumberInputStepper,
   SimpleGrid,
   Textarea,
   VStack,
 } from "@chakra-ui/react";
-import { Formik } from "formik";
+import { Field, Formik } from "formik";
 import React from "react";
 import CampoSelect from "./CampoSelect";
 import CampoTexto from "./CampoTexto";
@@ -43,10 +50,13 @@ export const FormularioLicencias = ({
   esEdicion = false,
   setEndDate,
   setStartDate,
+  muestraFechas,
+  onChangeDuracionLicencia,
+  detalleFechas,
   //edicionEntidadPais = false,
   //entidadpaisselected = null,
 }) => {
-  console.log("PELICULAQUELLEGA", valoresInicialesFormulario);
+  console.log("PELICULAQUELLEGA", valoresInicialesFormulario.numeroduracion);
   return (
     <Formik
       initialValues={valoresInicialesFormulario}
@@ -66,6 +76,7 @@ export const FormularioLicencias = ({
           onSubmit={formik.handleSubmit}
         >
           <Heading>Licencia</Heading>
+          <span> {detalleFechas} </span>
 
           <CampoTexto
             name="nombrepelicula"
@@ -158,42 +169,95 @@ export const FormularioLicencias = ({
             label="¿Cómo tratamos la duración de esta licencia?"
             datos={modoDuracion}
             placeholder="Seleccione"
+            onChange={(e) => {
+              formik.handleChange(e);
+              onChangeDuracionLicencia(e.target.value);
+              formik.setFieldValue("nombreduracion", "");
+              formik.setFieldValue("numeroduracion", "");
+            }}
           />
-          <SimpleGrid w={{ base: "90%", md: 900 }} columns={[3]} spacing={50}>
-            <FormControl>
-              <FormLabel>Fecha de inicio (si aplica)</FormLabel>
-              <Input
-                name="fechainicio"
-                id="fechainicio"
-                as={DatePicker}
-                selected={startDate}
-                onChange={(date) => setStartDate(date)}
-                selectsStart
-                startDate={startDate}
-                endDate={endDate}
-                locale="es"
+          {detalleFechas === "MD" && (
+            <SimpleGrid
+              w={{ base: "90%", md: 900 }}
+              columns={[1, 2, 3]}
+              spacing={10}
+            >
+              <CampoSelect
+                name="nombreduracion"
+                id="nombreduracion"
+                label="Periodo de la licencia"
+                datos={["Días", "Meses", "Años"]}
+                placeholder="Seleccione"
               />
-            </FormControl>
-            <FormControl>
-              <FormLabel>Días licencia</FormLabel>
-              <Badge colorScheme="green">{difDias}</Badge>
-            </FormControl>
-            <FormControl>
-              <FormLabel>Fecha de finalización (si aplica)</FormLabel>
-              <Input
-                name="fechafin"
-                id="fechafin"
-                as={DatePicker}
-                selected={endDate}
-                onChange={(date) => setEndDate(date)}
-                selectsEnd
-                startDate={startDate}
-                endDate={endDate}
-                minDate={formik.values.fechainicio}
-                locale="es"
-              />
-            </FormControl>
-          </SimpleGrid>
+
+              {formik.values.nombreduracion && (
+                <Field name="numeroduracion">
+                  {({ field, form }) => (
+                    <FormControl id="numeroduracion">
+                      <FormLabel htmlFor="numeroduracion">
+                        {formik.values.nombreduracion}
+                      </FormLabel>
+                      <NumberInput
+                        min={1}
+                        max={formik.values.nombreduracion === "Años" ? 5 : 30}
+                        id="numeroduracion "
+                        {...field}
+                        onChange={(val) => form.setFieldValue(field.name, val)}
+                      >
+                        <NumberInputField />
+                        <NumberInputStepper>
+                          <NumberIncrementStepper />
+                          <NumberDecrementStepper />
+                        </NumberInputStepper>
+                      </NumberInput>
+
+                      <FormErrorMessage>
+                        {form.errors.numeroduracion}
+                      </FormErrorMessage>
+                    </FormControl>
+                  )}
+                </Field>
+              )}
+            </SimpleGrid>
+          )}
+
+          {muestraFechas && (
+            <SimpleGrid w={{ base: "90%", md: 900 }} columns={[3]} spacing={50}>
+              <FormControl>
+                <FormLabel>Fecha de inicio (si aplica)</FormLabel>
+                <Input
+                  name="fechainicio"
+                  id="fechainicio"
+                  as={DatePicker}
+                  selected={startDate}
+                  onChange={(date) => setStartDate(date)}
+                  selectsStart
+                  startDate={startDate}
+                  endDate={endDate}
+                  locale="es"
+                />
+              </FormControl>
+              <FormControl>
+                <FormLabel>Días licencia</FormLabel>
+                <Badge colorScheme="green">{difDias}</Badge>
+              </FormControl>
+              <FormControl>
+                <FormLabel>Fecha de finalización (si aplica)</FormLabel>
+                <Input
+                  name="fechafin"
+                  id="fechafin"
+                  as={DatePicker}
+                  selected={endDate}
+                  onChange={(date) => setEndDate(date)}
+                  selectsEnd
+                  startDate={startDate}
+                  endDate={endDate}
+                  minDate={formik.values.fechainicio}
+                  locale="es"
+                />
+              </FormControl>
+            </SimpleGrid>
+          )}
 
           <FormControl>
             <FormLabel>Observaciones - comentarios - aclaraciones</FormLabel>
@@ -223,10 +287,7 @@ export const FormularioLicencias = ({
               </pre>
               <pre>
                 <code>
-                  {" "}
-                  (Lista entidades país) {JSON.stringify(
-                    listaEntidadesPais
-                  )}{" "}
+                  (Lista entidades país) {JSON.stringify(listaEntidadesPais)}
                 </code>
               </pre>
               <pre>
