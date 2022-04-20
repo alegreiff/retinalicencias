@@ -1,22 +1,22 @@
-import { getSession, useSession } from "next-auth/react";
-import { ACTION_TYPES, StoreContext } from "../store";
-import { useContext } from "react";
-import { useEffect, useState } from "react";
-import useSWR from "swr";
-import { fetcher } from "../lib";
-import { Wrapper } from "../components/Wrapper";
-import { Modal, ModalOverlay, useDisclosure } from "@chakra-ui/react";
-import Head from "next/head";
+import { getSession, useSession } from 'next-auth/react';
+import { ACTION_TYPES, StoreContext } from '../store';
+import { useContext } from 'react';
+import { useEffect, useState } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '../lib';
+import { Wrapper } from '../components/Wrapper';
+import { Modal, ModalOverlay, useDisclosure } from '@chakra-ui/react';
+import Head from 'next/head';
 
-import { useToast } from "@chakra-ui/react";
+import { useToast } from '@chakra-ui/react';
 
-import { useRouter } from "next/router";
-import { EntidadGratuitaNueva } from "../components/licencias/EntidadGratuitaNueva";
-import { FormularioLicencias } from "../components/forms/FormularioLicencias";
+import { useRouter } from 'next/router';
+import { EntidadGratuitaNueva } from '../components/licencias/EntidadGratuitaNueva';
+import { FormularioLicencias } from '../components/forms/FormularioLicencias';
 
 const PageSettings = (props) => {
   const { data: session } = useSession();
-  const [autor, setAutor] = useState("");
+  const [autor, setAutor] = useState('');
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -35,21 +35,21 @@ const PageSettings = (props) => {
       duration: 6000,
       isClosable: true,
     });
-    router.push("/licencias");
+    router.push('/licencias');
   };
 
   const valoresInicialesFormulario = {
-    nombrepelicula: "",
-    pais: "",
-    tipocontenido: "",
-    formaAdquisicion: "",
-    entidadpais: "",
-    entidadgratis: "",
-    geobloqueo: "",
-    mododuracion: "",
-    comentarios: "",
-    numeroduracion: "",
-    nombreduracion: "",
+    nombrepelicula: '',
+    pais: '',
+    tipocontenido: '',
+    formaAdquisicion: '',
+    entidadpais: '',
+    entidadgratis: '',
+    geobloqueo: '',
+    mododuracion: '',
+    comentarios: '',
+    numeroduracion: '',
+    nombreduracion: '',
   };
 
   const guardaLicencia = async (values) => {
@@ -68,16 +68,16 @@ const PageSettings = (props) => {
         nombreduracion,
         numeroduracion,
       } = values;
-      const entidad = "";
-      if (values.entidadpais === "") {
+      const entidad = '';
+      if (values.entidadpais === '') {
         entidad = values.entidadgratis;
       } else {
         entidad = values.entidadpais;
       }
-      const response = await fetch("/api/retina/guarda", {
-        method: "POST",
+      const response = await fetch('/api/retina/guarda', {
+        method: 'POST',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
           autor,
@@ -97,9 +97,9 @@ const PageSettings = (props) => {
       });
 
       const res = await response.json();
-      return; //PROVISIONAL
+      //return; //PROVISIONAL
       if (res) {
-        exitoCarga(nombrepelicula, res.resultado, "success");
+        exitoCarga(nombrepelicula, res.resultado, 'success');
       }
     } catch (err) {
       //console.error("Error creando la Licencia", err);
@@ -110,7 +110,7 @@ const PageSettings = (props) => {
   const {
     state: { datosLicencias },
   } = useContext(StoreContext);
-  const [muestraInfo, setMuestraInfo] = useState(true);
+  const [muestraInfo, setMuestraInfo] = useState(false);
   const [paises, setPaises] = useState([]);
   const [tipoCont, setTipoCont] = useState(datosLicencias[1]);
   const [formAdq, setFormAdq] = useState(datosLicencias[2]);
@@ -126,7 +126,7 @@ const PageSettings = (props) => {
 
   const [startDate, setStartDate] = useState(new Date());
   const [endDate, setEndDate] = useState(new Date());
-  const [difDias, setDifDias] = useState("");
+  const [difDias, setDifDias] = useState('');
   const [detalleFechas, setDetalleFechas] = useState(null);
 
   const [stateDatosLicencias, setStateDatosLicencias] =
@@ -134,7 +134,7 @@ const PageSettings = (props) => {
 
   const { data: dataStateDatosLicencias, error: errorStateDatosLicencias } =
     useSWR(
-      stateDatosLicencias.length === 0 ? "/api/retina/datos/A2:Z" : null,
+      stateDatosLicencias.length === 0 ? '/api/retina/datos/A2:Z' : null,
       fetcher
     );
 
@@ -166,7 +166,7 @@ const PageSettings = (props) => {
 
   const onChangeFormaAdquisicion = (value) => {
     setListaEntidadesPais([]);
-    if (value === "Compra") {
+    if (value === 'Compra') {
       setEntidadesPais(true);
       setEntidadesGratis(false);
       setListaEntidadesGratuitas([]);
@@ -181,27 +181,27 @@ const PageSettings = (props) => {
   const onChangePais = (value) => {
     if (retinaPaises.includes(value)) {
       switch (value) {
-        case "Bolivia": {
+        case 'Bolivia': {
           setListaEntidadesPais(datosLicencias[4]);
           break;
         }
-        case "Colombia": {
+        case 'Colombia': {
           setListaEntidadesPais(datosLicencias[5]);
           break;
         }
-        case "Ecuador": {
+        case 'Ecuador': {
           setListaEntidadesPais(datosLicencias[6]);
           break;
         }
-        case "México": {
+        case 'México': {
           setListaEntidadesPais(datosLicencias[7]);
           break;
         }
-        case "Perú": {
+        case 'Perú': {
           setListaEntidadesPais(datosLicencias[8]);
           break;
         }
-        case "Uruguay": {
+        case 'Uruguay': {
           setListaEntidadesPais(datosLicencias[9]);
           break;
         }
@@ -218,7 +218,7 @@ const PageSettings = (props) => {
     if (valor) {
       setListaEntidadesGratuitas(valor);
     } else {
-      console.log("Cancelarich");
+      console.log('Cancelarich');
     }
     onClose();
   };
@@ -238,7 +238,7 @@ const PageSettings = (props) => {
     }
   };
   useEffect(() => {
-    if (detalleFechas === "FF") {
+    if (detalleFechas === 'FF') {
       setMuestraFechas(true);
     } else {
       setMuestraFechas(false);
@@ -250,9 +250,9 @@ const PageSettings = (props) => {
       <Head>
         <title>Gestión de licencias</title>
       </Head>
-      <pre>
+      {/* <pre>
         <code>(MODO DURACIÓN) {JSON.stringify(modoDuracion[0], null, 5)}</code>
-      </pre>
+      </pre> */}
       <Wrapper>
         <Modal
           isOpen={isOpen}
@@ -264,7 +264,7 @@ const PageSettings = (props) => {
           <EntidadGratuitaNueva
             onClose={cierraModal}
             listaEntidadesGratuitas={listaEntidadesGratuitas}
-            rango="K"
+            rango='K'
           />
         </Modal>
 
@@ -302,7 +302,7 @@ const PageSettings = (props) => {
 export async function getServerSideProps(context) {
   const session = await getSession(context);
   if (!session) {
-    context.res.writeHead(302, { Location: "/" });
+    context.res.writeHead(302, { Location: '/' });
     context.res.end();
     return {};
   }

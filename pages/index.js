@@ -1,21 +1,21 @@
-import { useSession, signIn, signOut } from "next-auth/react";
+import { useSession, signIn, signOut } from 'next-auth/react';
 
-import { useContext } from "react";
-import Head from "next/head";
-import Image from "next/image";
+import { useContext } from 'react';
+import Head from 'next/head';
+import Image from 'next/image';
 import {
   authGoogle,
   hojaRetina,
   googleSheets,
   hojaLicenciasRetina,
-} from "../sheets";
+} from '../sheets';
 
-import styles from "../styles/Home.module.css";
-import { ACTION_TYPES, StoreContext } from "../store";
-import { useEffect } from "react";
-import { Wrapper } from "../components/Wrapper";
-import { FaMailBulk } from "react-icons/fa";
-import { Box, Button, Center } from "@chakra-ui/react";
+import styles from '../styles/Home.module.css';
+import { ACTION_TYPES, StoreContext } from '../store';
+import { useEffect } from 'react';
+import { Wrapper } from '../components/Wrapper';
+import { FaMailBulk } from 'react-icons/fa';
+import { Box, Button, Center } from '@chakra-ui/react';
 
 export default function Home({ licencias, datosBasicos }) {
   const { dispatch } = useContext(StoreContext);
@@ -49,20 +49,20 @@ export default function Home({ licencias, datosBasicos }) {
         <Head>
           <title>Licencias Retina Latina</title>
           <meta
-            name="description"
-            content="Aplicación para uso exclusivo de Retina Latina"
+            name='description'
+            content='Aplicación para uso exclusivo de Retina Latina'
           />
-          <link rel="icon" href="/favicon.ico" />
+          <link rel='icon' href='/favicon.ico' />
         </Head>
         <Wrapper>
-          <Box bg="purple" w="100%" p={4} color="white">
+          <Box bg='purple' w='100%' p={4} color='white'>
             Versión 0.54
           </Box>
-          <Center color="white" height="50vh">
+          <Center color='white' height='50vh'>
             <Button
               rightIcon={<FaMailBulk />}
-              colorScheme="teal"
-              variant="outline"
+              colorScheme='teal'
+              variant='outline'
               onClick={() => signOut()}
             >
               Cerrar sesión
@@ -74,14 +74,14 @@ export default function Home({ licencias, datosBasicos }) {
   }
   return (
     <Wrapper>
-      <Box bg="purple" w="100%" p={4} color="white">
-        Versión 0.54
+      <Box bg='purple' w='100%' p={4} color='white'>
+        Versión 0.62
       </Box>
-      <Center color="white" height="50vh">
+      <Center color='white' height='50vh'>
         <Button
           rightIcon={<FaMailBulk />}
-          colorScheme="teal"
-          variant="outline"
+          colorScheme='teal'
+          variant='outline'
           onClick={() => signIn()}
         >
           Ingreso a la plataforma de Licencias
@@ -92,20 +92,20 @@ export default function Home({ licencias, datosBasicos }) {
 }
 
 export async function getServerSideProps() {
-  console.log("SERVER SAID POORGS");
+  console.log('SERVER SAID POORGS');
   const auth = authGoogle;
   const spreadsheetId = hojaRetina;
   const cargaDatosBasicos = await googleSheets.spreadsheets.values.get({
     auth,
-    majorDimension: "COLUMNS",
+    majorDimension: 'COLUMNS',
     spreadsheetId: hojaLicenciasRetina,
-    range: "settings!A2:Z",
+    range: 'settings!A2:Z',
   });
 
   const cargaLicencias = await googleSheets.spreadsheets.values.get({
     auth,
     spreadsheetId: hojaLicenciasRetina,
-    range: "matriz!A2:O",
+    range: 'matriz!A2:O',
   });
 
   const datosBasicos = cargaDatosBasicos.data.values;
