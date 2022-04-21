@@ -24,7 +24,7 @@ import 'moment/locale/es';
 export default function Home({ licencias, datosBasicos }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
-  const [version, setVersion] = useState('0.80');
+  const [version, setVersion] = useState('0.81');
 
   //console.log(session);
   //console.log(status);
