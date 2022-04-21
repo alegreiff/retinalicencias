@@ -1,20 +1,21 @@
-import { Box, Button, useDisclosure, useToast } from "@chakra-ui/react";
-import moment from "moment";
-import { useSession } from "next-auth/react";
-import { useRouter } from "next/router";
-import React, { useContext, useEffect, useState } from "react";
-import useSWR from "swr";
-import { fetcher } from "../lib";
-import { ACTION_TYPES, StoreContext } from "../store";
-import { FormularioLicencias } from "./forms/FormularioLicencias";
+import { Box, Button, useDisclosure, useToast } from '@chakra-ui/react';
+import moment from 'moment';
+import { useSession } from 'next-auth/react';
+import { useRouter } from 'next/router';
+import React, { useContext, useEffect, useState } from 'react';
+import useSWR from 'swr';
+import { fetcher } from '../lib';
+import { ACTION_TYPES, StoreContext } from '../store';
+import { FormularioLicencias } from './forms/FormularioLicencias';
 
-export const EditaLicencia = ({ licencia }) => {
+export const EditaLicencia = ({ licencia, cierra }) => {
   const stringToDate = (dateString) => {
-    const [day, month, year] = dateString.split("/");
-    return new Date([month, day, year].join("/"));
+    const [day, month, year] = dateString.split('/');
+    return new Date([month, day, year].join('/'));
   };
-  console.log("LICCCE", licencia);
+  //console.log('LICCCE', licencia);
   const {
+    id,
     nombrepelicula,
     pais,
     tipocontenido,
@@ -27,6 +28,8 @@ export const EditaLicencia = ({ licencia }) => {
     entidadpais,
     startDate: _startDate,
     endDate: _endDate,
+    nombreduracion,
+    numeroduracion,
   } = licencia;
 
   const valoresInicialesFormulario = {
@@ -42,12 +45,15 @@ export const EditaLicencia = ({ licencia }) => {
     entidadpais,
     startDate: _startDate ? stringToDate(_startDate) : new Date(),
     endDate: _endDate ? stringToDate(_endDate) : new Date(),
+    nombreduracion,
+    numeroduracion,
+    validaespecial: true,
   };
-  console.log("fechaInicial", _startDate);
-  console.log("INITIAL FORM DATA", valoresInicialesFormulario);
+  //console.log('fechaInicial', _startDate);
+  //console.log('INITIAL FORM DATA', valoresInicialesFormulario);
 
   const { data: session } = useSession();
-  const [autor, setAutor] = useState("");
+  const [autor, setAutor] = useState('');
 
   useEffect(() => {
     if (session?.user?.email) {
@@ -60,18 +66,21 @@ export const EditaLicencia = ({ licencia }) => {
   const toast = useToast();
   const exitoCarga = (mensaje, nota, status) => {
     toast({
-      title: `Creación de licencia: ${nota}`,
+      title: `Modificación  de licencia: ${nota}`,
       description: mensaje,
       status,
       duration: 6000,
       isClosable: true,
     });
-    router.push("/licencias");
+    cierra();
+
+    router.push('/');
+    //router.push('/licencias');
   };
 
   const guardaLicencia = async (values) => {
     console.log(values, startDate, endDate);
-    return;
+    //return;
     try {
       const {
         nombrepelicula,
@@ -81,19 +90,23 @@ export const EditaLicencia = ({ licencia }) => {
         geobloqueo,
         mododuracion,
         comentarios,
+        nombreduracion,
+        numeroduracion,
       } = values;
-      const entidad = "";
-      if (values.entidadpais === "") {
+
+      const entidad = '';
+      if (values.entidadpais === '') {
         entidad = values.entidadgratis;
       } else {
         entidad = values.entidadpais;
       }
-      const response = await fetch("/api/retina/guarda", {
-        method: "POST",
+      const response = await fetch('/api/retina/modifica', {
+        method: 'PUT',
         headers: {
-          "Content-Type": "application/json",
+          'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          id,
           autor,
           nombrepelicula,
           pais,
@@ -102,13 +115,20 @@ export const EditaLicencia = ({ licencia }) => {
           entidad,
           geobloqueo,
           mododuracion,
+          startDate,
+          endDate,
           comentarios,
+          nombreduracion,
+          numeroduracion,
         }),
       });
 
       const res = await response.json();
+      console.log(res);
+
+      //return; //PROVISIONAL
       if (res) {
-        exitoCarga(nombrepelicula, res.resultado, "success");
+        exitoCarga(nombrepelicula, res.resultado, 'success');
       }
     } catch (err) {
       //console.error("Error creando la Licencia", err);
@@ -126,11 +146,14 @@ export const EditaLicencia = ({ licencia }) => {
   const [retinaPaises, setRetinaPaises] = useState(datosLicencias[3]);
   const [geobloqueo, setGeobloqueo] = useState(datosLicencias[11]);
   const [modoDuracion, setModoDuracion] = useState(datosLicencias[12]);
+  const [auxModoDuracion, setAuxModoDuracion] = useState(datosLicencias[13]);
   const [entidadesPais, setEntidadesPais] = useState(false);
   const [entidadesGratis, setEntidadesGratis] = useState(false);
   const [listaEntidadesPais, setListaEntidadesPais] = useState([]);
   const [listaEntidadesGratuitas, setListaEntidadesGratuitas] = useState([]);
+  const [muestraFechas, setMuestraFechas] = useState(false);
   const [edicionEntidadPais, setEdicionEntidadPais] = useState(false);
+  const [detalleFechas, setDetalleFechas] = useState(null);
 
   //const [startDate, setStartDate] = useState(new Date());
   //const [endDate, setEndDate] = useState(new Date());
@@ -138,16 +161,16 @@ export const EditaLicencia = ({ licencia }) => {
     valoresInicialesFormulario.startDate
   );
   const [endDate, setEndDate] = useState(valoresInicialesFormulario.endDate);
-  const [difDias, setDifDias] = useState("");
+  const [difDias, setDifDias] = useState('');
 
-  console.log("INIT", startDate);
+  //console.log('INIT', startDate);
 
   const [stateDatosLicencias, setStateDatosLicencias] =
     useState(datosLicencias);
 
   const { data: dataStateDatosLicencias, error: errorStateDatosLicencias } =
     useSWR(
-      stateDatosLicencias.length === 0 ? "/api/retina/datos/A2:Z" : null,
+      stateDatosLicencias.length === 0 ? '/api/retina/datos/A2:Z' : null,
       fetcher
     );
 
@@ -155,7 +178,7 @@ export const EditaLicencia = ({ licencia }) => {
     const diferenciaFechas = (startDate, endDate) => {
       const difference = Math.abs(startDate - endDate);
       const days = difference / (1000 * 3600 * 24);
-      setDifDias(Math.floor(days));
+      setDifDias(Math.floor(days) + 1);
     };
     diferenciaFechas(startDate, endDate);
   }, [startDate, endDate]);
@@ -172,13 +195,14 @@ export const EditaLicencia = ({ licencia }) => {
       setRetinaPaises(dataStateDatosLicencias.data[3]);
       setGeobloqueo(dataStateDatosLicencias.data[11]);
       setModoDuracion(dataStateDatosLicencias.data[12]);
+      setAuxModoDuracion(dataStateDatosLicencias.data[13]);
       setStateDatosLicencias(dataStateDatosLicencias.data);
     }
   }, [dispatch, dataStateDatosLicencias]);
 
   const onChangeFormaAdquisicion = (value) => {
     setListaEntidadesPais([]);
-    if (value === "Compra") {
+    if (value === 'Compra') {
       setEntidadesPais(true);
       setEntidadesGratis(false);
       setListaEntidadesGratuitas([]);
@@ -190,30 +214,31 @@ export const EditaLicencia = ({ licencia }) => {
       setPaises(datosLicencias[0]);
     }
   };
+
   const onChangePais = (value) => {
     if (retinaPaises.includes(value)) {
       switch (value) {
-        case "Bolivia": {
+        case 'Bolivia': {
           setListaEntidadesPais(datosLicencias[4]);
           break;
         }
-        case "Colombia": {
+        case 'Colombia': {
           setListaEntidadesPais(datosLicencias[5]);
           break;
         }
-        case "Ecuador": {
+        case 'Ecuador': {
           setListaEntidadesPais(datosLicencias[6]);
           break;
         }
-        case "México": {
+        case 'México': {
           setListaEntidadesPais(datosLicencias[7]);
           break;
         }
-        case "Perú": {
+        case 'Perú': {
           setListaEntidadesPais(datosLicencias[8]);
           break;
         }
-        case "Uruguay": {
+        case 'Uruguay': {
           setListaEntidadesPais(datosLicencias[9]);
           break;
         }
@@ -230,13 +255,30 @@ export const EditaLicencia = ({ licencia }) => {
     if (valor) {
       setListaEntidadesGratuitas(valor);
     } else {
-      console.log("Cancelarich");
+      //console.log('Cancelarich');
     }
     onClose();
   };
+
+  const onChangeDuracionLicencia = (value) => {
+    if (!value) {
+      setDetalleFechas(null);
+      return;
+    }
+
+    const indice = modoDuracion.indexOf(value);
+    const detalle = auxModoDuracion[indice];
+    if (detalle) {
+      setDetalleFechas(detalle);
+    } else {
+      setDetalleFechas(null);
+    }
+    console.log('onChangeDuracionLicencia', detalleFechas);
+  };
+
   useEffect(() => {
     if (formaAdquisicion) {
-      if (formaAdquisicion === "Compra") {
+      if (formaAdquisicion === 'Compra') {
         setEdicionEntidadPais(true);
         setEntidadesPais(true);
         setEntidadesGratis(false);
@@ -252,31 +294,31 @@ export const EditaLicencia = ({ licencia }) => {
     }
   }, [datosLicencias, formaAdquisicion]);
 
-  useEffect(() => {
+  /* useEffect(() => {
     if (pais) {
       if (retinaPaises.includes(pais)) {
         switch (pais) {
-          case "Bolivia": {
+          case 'Bolivia': {
             setListaEntidadesPais(datosLicencias[4]);
             break;
           }
-          case "Colombia": {
+          case 'Colombia': {
             setListaEntidadesPais(datosLicencias[5]);
             break;
           }
-          case "Ecuador": {
+          case 'Ecuador': {
             setListaEntidadesPais(datosLicencias[6]);
             break;
           }
-          case "México": {
+          case 'México': {
             setListaEntidadesPais(datosLicencias[7]);
             break;
           }
-          case "Perú": {
+          case 'Perú': {
             setListaEntidadesPais(datosLicencias[8]);
             break;
           }
-          case "Uruguay": {
+          case 'Uruguay': {
             setListaEntidadesPais(datosLicencias[9]);
             break;
           }
@@ -288,10 +330,17 @@ export const EditaLicencia = ({ licencia }) => {
         setListaEntidadesPais([]);
       }
     }
-  }, []);
-
+  }, []); */
+  useEffect(() => {
+    if (detalleFechas === 'FF') {
+      setMuestraFechas(true);
+    } else {
+      setMuestraFechas(false);
+    }
+  }, [detalleFechas]);
   return (
     <Box>
+      {(pais, id)}
       <FormularioLicencias
         valoresInicialesFormulario={valoresInicialesFormulario}
         tipoCont={tipoCont}
@@ -312,11 +361,14 @@ export const EditaLicencia = ({ licencia }) => {
         onClose={onClose}
         onChangePais={onChangePais}
         guardaLicencia={guardaLicencia}
+        setEndDate={setEndDate}
+        setStartDate={setStartDate}
+        muestraFechas={muestraFechas}
         //edicionEntidadPais
         //entidadpaisselected={0}
         esEdicion={true}
-        setEndDate={setEndDate}
-        setStartDate={setStartDate}
+        onChangeDuracionLicencia={onChangeDuracionLicencia}
+        detalleFechas={detalleFechas}
       />
     </Box>
   );

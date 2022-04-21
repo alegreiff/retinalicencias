@@ -1,7 +1,7 @@
-import { getSession } from "next-auth/react";
+import { getSession } from 'next-auth/react';
 
-import React, { useContext, useEffect, useState, useMemo } from "react";
-import { Wrapper } from "../components/Wrapper";
+import React, { useContext, useEffect, useState, useMemo } from 'react';
+import { Wrapper } from '../components/Wrapper';
 import {
   Table,
   Thead,
@@ -19,15 +19,15 @@ import {
   DrawerBody,
   DrawerFooter,
   useDisclosure,
-} from "@chakra-ui/react";
-import { TriangleDownIcon, TriangleUpIcon } from "@chakra-ui/icons";
-import { useTable, useSortBy } from "react-table";
-import { authGoogle, googleSheets, hojaLicenciasRetina } from "../sheets";
-import orderBy from "lodash/orderBy";
-import Moment from "moment";
-import "moment/locale/es";
-import { EditaLicencia } from "../components/EditaLicencia";
-Moment.locale("es");
+} from '@chakra-ui/react';
+import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
+import { useTable, useSortBy } from 'react-table';
+import { authGoogle, googleSheets, hojaLicenciasRetina } from '../sheets';
+import orderBy from 'lodash/orderBy';
+import Moment from 'moment';
+import 'moment/locale/es';
+import { EditaLicencia } from '../components/EditaLicencia';
+Moment.locale('es');
 
 const PageLicencias = ({ resultado }) => {
   const { isOpen, onOpen, onClose } = useDisclosure();
@@ -35,12 +35,12 @@ const PageLicencias = ({ resultado }) => {
   const btnRef = React.useRef();
 
   const detalleLicencia = (e) => {
-    const id = e.currentTarget.getAttribute("data-licencia");
-    console.log("ACTIVO", id);
+    const id = e.currentTarget.getAttribute('data-licencia');
+    console.log('ACTIVO', id);
     const licencia = resultado.find(
       (res) => res.id.toString() === id.toString()
     );
-    console.log("LICENCIA QUE VA", licencia);
+    console.log('LICENCIA QUE VA', licencia);
 
     setActivo(licencia);
     //console.log("ACTIVO", licencia);
@@ -48,6 +48,7 @@ const PageLicencias = ({ resultado }) => {
   };
 
   const cierraDrawer = () => {
+    console.log('tuito cerao');
     setActivo([]);
     onClose();
   };
@@ -56,13 +57,13 @@ const PageLicencias = ({ resultado }) => {
   const columns2 = useMemo(
     () => [
       {
-        Header: "ID",
-        accessor: "",
+        Header: 'ID',
+        accessor: '',
         Cell: ({ row: { original } }) => (
           <>
             <Button
-              colorScheme="teal"
-              size="xs"
+              colorScheme='teal'
+              size='xs'
               onClick={detalleLicencia}
               data-licencia={original.id}
             >
@@ -72,13 +73,13 @@ const PageLicencias = ({ resultado }) => {
         ),
         isNumeric: true,
       },
-      { Header: "Code", accessor: "id" },
-      { Header: "Creación", accessor: "fechacreacion" },
+      { Header: 'Code', accessor: 'id' },
+      { Header: 'Creación', accessor: 'fechacreacion' },
       //{ Header: "Autor", accessor: "autor" },
-      { Header: "Película", accessor: "nombrepelicula" },
-      { Header: "País", accessor: "pais" },
+      { Header: 'Película', accessor: 'nombrepelicula' },
+      { Header: 'País', accessor: 'pais' },
       //{ Header: "Tipo", accessor: "tipocontenido" },
-      { Header: "Adquisición", accessor: "formaadquisicion" },
+      { Header: 'Adquisición', accessor: 'formaadquisicion' },
     ],
     []
   );
@@ -90,10 +91,10 @@ const PageLicencias = ({ resultado }) => {
       <Wrapper>
         <Drawer
           isOpen={isOpen}
-          placement="top"
+          placement='top'
           onClose={cierraDrawer}
           finalFocusRef={btnRef}
-          size="md"
+          size='md'
         >
           <DrawerOverlay />
           <DrawerContent>
@@ -103,14 +104,14 @@ const PageLicencias = ({ resultado }) => {
             </DrawerHeader>
 
             <DrawerBody>
-              <EditaLicencia licencia={activo} />
+              <EditaLicencia licencia={activo} cierra={cierraDrawer} />
             </DrawerBody>
 
             <DrawerFooter>
-              <Button variant="outline" mr={3} onClick={cierraDrawer}>
+              <Button variant='outline' mr={3} onClick={cierraDrawer}>
                 Cancel
               </Button>
-              <Button colorScheme="blue">Save</Button>
+              <Button colorScheme='blue'>Save</Button>
             </DrawerFooter>
           </DrawerContent>
         </Drawer>
@@ -124,13 +125,13 @@ const PageLicencias = ({ resultado }) => {
                     {...column.getHeaderProps(column.getSortByToggleProps())}
                     isNumeric={column.isNumeric}
                   >
-                    {column.render("Header")}
-                    <chakra.span pl="4">
+                    {column.render('Header')}
+                    <chakra.span pl='4'>
                       {column.isSorted ? (
                         column.isSortedDesc ? (
-                          <TriangleDownIcon aria-label="sorted descending" />
+                          <TriangleDownIcon aria-label='sorted descending' />
                         ) : (
-                          <TriangleUpIcon aria-label="sorted ascending" />
+                          <TriangleUpIcon aria-label='sorted ascending' />
                         )
                       ) : null}
                     </chakra.span>
@@ -150,7 +151,7 @@ const PageLicencias = ({ resultado }) => {
                       {...cell.getCellProps()}
                       isNumeric={cell.column.isNumeric}
                     >
-                      {cell.render("Cell")}
+                      {cell.render('Cell')}
                     </Td>
                   ))}
                 </Tr>
@@ -169,7 +170,7 @@ export default PageLicencias;
 export async function getServerSideProps(context) {
   const session = await getSession(context);
   if (!session) {
-    context.res.writeHead(302, { Location: "/" });
+    context.res.writeHead(302, { Location: '/' });
     context.res.end();
     return {};
   } else {
@@ -178,7 +179,7 @@ export async function getServerSideProps(context) {
     const cargaLicencias = await googleSheets.spreadsheets.values.get({
       auth,
       spreadsheetId: hojaLicenciasRetina,
-      range: "matriz!A2:O",
+      range: 'matriz!A2:O',
     });
 
     const licencias = cargaLicencias.data.values
@@ -186,17 +187,17 @@ export async function getServerSideProps(context) {
       : [];
 
     let resultado = [];
-    const y = Moment("13-03-2022 0:00", "DD-MM-YYYY HH:mm").format(
-      "MMMM D, YYYY HH:MM"
+    const y = Moment('13-03-2022 0:00', 'DD-MM-YYYY HH:mm').format(
+      'MMMM D, YYYY HH:MM'
     );
 
     licencias.forEach((licencia) => {
-      const fecha = Moment(licencia[1], "DD-MM-YYYY HH:mm").format(
-        "MMMM D, YYYY"
+      const fecha = Moment(licencia[1], 'DD-MM-YYYY HH:mm').format(
+        'MMMM D, YYYY'
       );
-      let entidadpais = "";
-      let entidadgratis = "";
-      if (licencia[6] === "Compra") {
+      let entidadpais = '';
+      let entidadgratis = '';
+      if (licencia[6] === 'Compra') {
         entidadpais = licencia[7];
       } else {
         entidadgratis = licencia[7];
@@ -212,15 +213,17 @@ export async function getServerSideProps(context) {
         formaAdquisicion: licencia[6],
         entidad: licencia[7],
         geobloqueo: licencia[8],
-        mododuracion: licencia[9] ? licencia[9] : "",
-        comentarios: licencia[14] ? licencia[14] : "",
-        startDate: licencia[10] ? licencia[10] : "",
-        endDate: licencia[11] ? licencia[11] : "",
+        mododuracion: licencia[9] ? licencia[9] : '',
+        comentarios: licencia[14] ? licencia[14] : '',
+        startDate: licencia[10] ? licencia[10] : '',
+        endDate: licencia[11] ? licencia[11] : '',
+        nombreduracion: licencia[12] ? licencia[12] : '',
+        numeroduracion: licencia[13] ? licencia[13] : '',
         entidadpais: entidadpais,
         entidadgratis: entidadgratis,
       });
     });
-    resultado = orderBy(resultado, ["fechacreacion"], ["desc"]);
+    resultado = orderBy(resultado, ['fechacreacion'], ['desc']);
 
     return {
       props: { resultado },

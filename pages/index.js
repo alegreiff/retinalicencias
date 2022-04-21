@@ -1,6 +1,6 @@
 import { useSession, signIn, signOut } from 'next-auth/react';
 
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import {
@@ -20,6 +20,7 @@ import { Box, Button, Center } from '@chakra-ui/react';
 export default function Home({ licencias, datosBasicos }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
+  const [version, setVersion] = useState('0.71');
 
   //console.log(session);
   //console.log(status);
@@ -56,7 +57,7 @@ export default function Home({ licencias, datosBasicos }) {
         </Head>
         <Wrapper>
           <Box bg='purple' w='100%' p={4} color='white'>
-            Versión 0.54
+            Versión {version}
           </Box>
           <Center color='white' height='50vh'>
             <Button
@@ -75,7 +76,7 @@ export default function Home({ licencias, datosBasicos }) {
   return (
     <Wrapper>
       <Box bg='purple' w='100%' p={4} color='white'>
-        Versión 0.62
+        Versión {version}
       </Box>
       <Center color='white' height='50vh'>
         <Button

@@ -3,7 +3,7 @@ import { authGoogle, googleSheets, hojaLicenciasRetina } from '../../../sheets';
 
 const handler = async (req, res) => {
   //moment;
-  if (req.method === 'POST') {
+  if (req.method === 'PUT') {
     let date = new Date();
     let day = `0${date.getDate()}`.slice(-2); //("0"+date.getDate()).slice(-2);
     let month = `0${date.getMonth() + 1}`.slice(-2);
@@ -15,6 +15,7 @@ const handler = async (req, res) => {
     const fecha = `${day}-${month}-${year} ${hour}:${minutes}`;
 
     const {
+      id,
       autor,
       nombrepelicula,
       pais,
@@ -40,20 +41,24 @@ const handler = async (req, res) => {
 
     console.log('NAME', nombreduracion);
     console.log('DATTA', numeroduracion);
+    console.log('INI', startDate);
+    console.log('FIN', endDate);
+    //res.status(200).json({ message: 'El águila está en el nido' });
+    //return;
 
     const auth = authGoogle;
     const spreadsheetId = hojaLicenciasRetina;
-    const rango = 'matriz!A:E';
+    const rango = `matriz!B${id + 1}`;
 
-    const getRows = await googleSheets.spreadsheets.values.get({
+    /* const getRows = await googleSheets.spreadsheets.values.get({
       auth,
       spreadsheetId,
       range: rango,
     });
-    const ID = getRows.data.values.length;
+    const ID = getRows.data.values.length; */
     //Write rows to spreadsheet
 
-    const carga = await googleSheets.spreadsheets.values.append({
+    const carga = await googleSheets.spreadsheets.values.update({
       auth,
       spreadsheetId,
       range: rango,
@@ -62,7 +67,6 @@ const handler = async (req, res) => {
       resource: {
         values: [
           [
-            ID,
             fecha,
             autor,
             nombrepelicula,
@@ -89,7 +93,7 @@ const handler = async (req, res) => {
 
     res.status(200).json({ resultado: carga.statusText });
   } else {
-    res.status(500).json({ error: 'Solo POST' });
+    res.status(500).json({ error: 'Solo PUT' });
   }
 };
 export default handler;

@@ -53,6 +53,7 @@ const PageSettings = (props) => {
   };
 
   const guardaLicencia = async (values) => {
+    console.info('ooooooo');
     console.log(values, startDate, endDate);
     //return;
 
@@ -68,6 +69,7 @@ const PageSettings = (props) => {
         nombreduracion,
         numeroduracion,
       } = values;
+
       const entidad = '';
       if (values.entidadpais === '') {
         entidad = values.entidadgratis;
@@ -142,7 +144,7 @@ const PageSettings = (props) => {
     const diferenciaFechas = (startDate, endDate) => {
       const difference = Math.abs(startDate - endDate);
       const days = difference / (1000 * 3600 * 24);
-      setDifDias(Math.floor(days));
+      setDifDias(Math.floor(days + 1));
     };
     diferenciaFechas(startDate, endDate);
   }, [startDate, endDate]);
