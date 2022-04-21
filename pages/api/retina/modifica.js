@@ -48,7 +48,7 @@ const handler = async (req, res) => {
 
     const auth = authGoogle;
     const spreadsheetId = hojaLicenciasRetina;
-    const rango = `matriz!B${id + 1}`;
+    const rango = `matriz!A${id + 1}`;
 
     /* const getRows = await googleSheets.spreadsheets.values.get({
       auth,
@@ -58,6 +58,23 @@ const handler = async (req, res) => {
     const ID = getRows.data.values.length; */
     //Write rows to spreadsheet
 
+    const valoresUpdated = [
+      id,
+      fecha,
+      autor,
+      nombrepelicula,
+      pais,
+      tipocontenido,
+      formaAdquisicion,
+      entidad,
+      geobloqueo,
+      mododuracion,
+      startDate,
+      endDate,
+      nombreduracion,
+      numeroduracion,
+      comentarios,
+    ];
     const carga = await googleSheets.spreadsheets.values.update({
       auth,
       spreadsheetId,
@@ -65,24 +82,7 @@ const handler = async (req, res) => {
       //valueInputOption: "RAW"
       valueInputOption: 'USER_ENTERED',
       resource: {
-        values: [
-          [
-            fecha,
-            autor,
-            nombrepelicula,
-            pais,
-            tipocontenido,
-            formaAdquisicion,
-            entidad,
-            geobloqueo,
-            mododuracion,
-            startDate,
-            endDate,
-            nombreduracion,
-            numeroduracion,
-            comentarios,
-          ],
-        ],
+        values: [valoresUpdated],
       },
     });
 
@@ -91,7 +91,7 @@ const handler = async (req, res) => {
       res.status(501).json({ resultado: 'Error en la carga' });
     }
 
-    res.status(200).json({ resultado: carga.statusText });
+    res.status(200).json({ resultado: carga.statusText, data: valoresUpdated });
   } else {
     res.status(500).json({ error: 'Solo PUT' });
   }

@@ -22,17 +22,26 @@ import {
 } from '@chakra-ui/react';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
 import { useTable, useSortBy } from 'react-table';
-import { authGoogle, googleSheets, hojaLicenciasRetina } from '../sheets';
-import orderBy from 'lodash/orderBy';
+//import { authGoogle, googleSheets, hojaLicenciasRetina } from '../sheets';
+//import orderBy from 'lodash/orderBy';
 import Moment from 'moment';
 import 'moment/locale/es';
 import { EditaLicencia } from '../components/EditaLicencia';
+import { useRouter } from 'next/router';
+import { StoreContext } from '../store';
 Moment.locale('es');
 
-const PageLicencias = ({ resultado }) => {
+const PageLicencias = () => {
+  const router = useRouter();
   const { isOpen, onOpen, onClose } = useDisclosure();
   const [activo, setActivo] = useState([]);
   const btnRef = React.useRef();
+
+  const {
+    state: { licencias },
+  } = useContext(StoreContext);
+
+  const [resultado, setResultado] = useState(licencias);
 
   const detalleLicencia = (e) => {
     const id = e.currentTarget.getAttribute('data-licencia');
@@ -62,13 +71,20 @@ const PageLicencias = ({ resultado }) => {
         Cell: ({ row: { original } }) => (
           <>
             <Button
+              onClick={() => {
+                router.push(`/edicion/${original.id}`);
+              }}
+            >
+              Editar
+            </Button>
+            {/* <Button
               colorScheme='teal'
               size='xs'
               onClick={detalleLicencia}
               data-licencia={original.id}
             >
               Ver {original.id}
-            </Button>
+            </Button> */}
           </>
         ),
         isNumeric: true,
@@ -79,7 +95,7 @@ const PageLicencias = ({ resultado }) => {
       { Header: 'Película', accessor: 'nombrepelicula' },
       { Header: 'País', accessor: 'pais' },
       //{ Header: "Tipo", accessor: "tipocontenido" },
-      { Header: 'Adquisición', accessor: 'formaadquisicion' },
+      { Header: 'Adquisición', accessor: 'formaAdquisicion' },
     ],
     []
   );
@@ -167,7 +183,8 @@ const PageLicencias = ({ resultado }) => {
 
 export default PageLicencias;
 
-export async function getServerSideProps(context) {
+/* export async function getServerSideProps(context) {
+  console.log('PASA RPO GETSERVEERSIDEPROPS');
   const session = await getSession(context);
   if (!session) {
     context.res.writeHead(302, { Location: '/' });
@@ -229,4 +246,4 @@ export async function getServerSideProps(context) {
       props: { resultado },
     };
   }
-}
+} */

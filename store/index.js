@@ -1,10 +1,11 @@
-import { createContext, useReducer } from "react";
+import { createContext, useReducer } from 'react';
 export const StoreContext = createContext();
 
 export const ACTION_TYPES = {
-  SET_MENU_ITEMS: "SET_MENU_ITEMS",
-  SET_LICENCIAS: "SET_LICENCIAS",
-  SET_DATOS_BASICOS: "SET_DATOS_BASICOS",
+  SET_MENU_ITEMS: 'SET_MENU_ITEMS',
+  SET_LICENCIAS: 'SET_LICENCIAS',
+  SET_DATOS_BASICOS: 'SET_DATOS_BASICOS',
+  MODIFICA_LICENCIA: 'MODIFICA_LICENCIA',
 };
 
 const storeReducer = (state, action) => {
@@ -19,6 +20,16 @@ const storeReducer = (state, action) => {
     case ACTION_TYPES.SET_DATOS_BASICOS: {
       return { ...state, datosLicencias: action.payload.datosLicencias };
     }
+    case ACTION_TYPES.MODIFICA_LICENCIA: {
+      const id = action.payload.id;
+      const licencias = state.licencias.filter((lic) => lic.id !== Number(id));
+      const nuevasLicencias = [...licencias, action.payload.licencia];
+      console.log(nuevasLicencias);
+      return {
+        ...state,
+        licencias: nuevasLicencias,
+      };
+    }
     default:
       throw new Error(`ACCION DESCONOCIDA: ${action.type}`);
   }
@@ -29,8 +40,8 @@ const StoreProvider = ({ children }) => {
     licencias: [],
     datosLicencias: [],
     elementosMenu: [
-      ["/nueva", "Crear nueva licencia"],
-      ["/licencias", "Licencias"],
+      ['/nueva', 'Crear nueva licencia'],
+      ['/licencias', 'Licencias'],
     ],
   };
   const [state, dispatch] = useReducer(storeReducer, initialState);

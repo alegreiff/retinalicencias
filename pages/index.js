@@ -17,10 +17,14 @@ import { Wrapper } from '../components/Wrapper';
 import { FaMailBulk } from 'react-icons/fa';
 import { Box, Button, Center } from '@chakra-ui/react';
 
+import orderBy from 'lodash/orderBy';
+import Moment from 'moment';
+import 'moment/locale/es';
+
 export default function Home({ licencias, datosBasicos }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
-  const [version, setVersion] = useState('0.71');
+  const [version, setVersion] = useState('0.80');
 
   //console.log(session);
   //console.log(status);
@@ -115,10 +119,49 @@ export async function getServerSideProps() {
     ? cargaLicencias.data.values
     : [];
 
+  let resultado = [];
+  const y = Moment('13-03-2022 0:00', 'DD-MM-YYYY HH:mm').format(
+    'MMMM D, YYYY HH:MM'
+  );
+
+  licencias.forEach((licencia) => {
+    const fecha = Moment(licencia[1], 'DD-MM-YYYY HH:mm').format(
+      'MMMM D, YYYY'
+    );
+    let entidadpais = '';
+    let entidadgratis = '';
+    if (licencia[6] === 'Compra') {
+      entidadpais = licencia[7];
+    } else {
+      entidadgratis = licencia[7];
+    }
+
+    resultado.push({
+      id: Number(licencia[0]),
+      fechacreacion: fecha,
+      autor: licencia[2],
+      nombrepelicula: licencia[3],
+      pais: licencia[4],
+      tipocontenido: licencia[5],
+      formaAdquisicion: licencia[6],
+      entidad: licencia[7],
+      geobloqueo: licencia[8],
+      mododuracion: licencia[9] ? licencia[9] : '',
+      comentarios: licencia[14] ? licencia[14] : '',
+      startDate: licencia[10] ? licencia[10] : '',
+      endDate: licencia[11] ? licencia[11] : '',
+      nombreduracion: licencia[12] ? licencia[12] : '',
+      numeroduracion: licencia[13] ? licencia[13] : '',
+      entidadpais: entidadpais,
+      entidadgratis: entidadgratis,
+    });
+  });
+  resultado = orderBy(resultado, ['fechacreacion'], ['desc']);
+
   // Pass data to the page via props
   return {
     props: {
-      licencias,
+      licencias: resultado,
       datosBasicos,
     },
   };

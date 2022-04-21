@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '../lib';
+import { mapeaLicencia } from '../lib/mapealicencia';
 import { ACTION_TYPES, StoreContext } from '../store';
 import { FormularioLicencias } from './forms/FormularioLicencias';
 
@@ -72,10 +73,10 @@ export const EditaLicencia = ({ licencia, cierra }) => {
       duration: 6000,
       isClosable: true,
     });
-    cierra();
+    //cierra();
 
-    router.push('/');
-    //router.push('/licencias');
+    //router.push('/remanso');
+    router.push('/licencias');
   };
 
   const guardaLicencia = async (values) => {
@@ -128,6 +129,19 @@ export const EditaLicencia = ({ licencia, cierra }) => {
 
       //return; //PROVISIONAL
       if (res) {
+        const nuevaLicencia = mapeaLicencia(res.data);
+        console.log('NUEVA LICENCIA:', nuevaLicencia);
+
+        //console.log(res);
+        //return;
+        dispatch({
+          type: ACTION_TYPES.MODIFICA_LICENCIA,
+          payload: {
+            id,
+            licencia: nuevaLicencia,
+          },
+        });
+
         exitoCarga(nombrepelicula, res.resultado, 'success');
       }
     } catch (err) {
