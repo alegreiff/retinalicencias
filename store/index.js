@@ -42,6 +42,7 @@ const StoreProvider = ({ children }) => {
     elementosMenu: [
       ['/nueva', 'Crear nueva licencia'],
       ['/licencias', 'Licencias'],
+      ['/remanso', 'Test'],
     ],
   };
   const [state, dispatch] = useReducer(storeReducer, initialState);
