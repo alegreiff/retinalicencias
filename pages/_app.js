@@ -2,13 +2,14 @@ import { SessionProvider } from 'next-auth/react';
 import { ChakraProvider } from '@chakra-ui/react';
 import StoreProvider from '../store';
 import '../styles/globals.css';
+import retinaTema from '../theme';
 
 //function MyApp({ Component, pageProps }) {
 //function MyApp({ Component, pageProps: { session, ...pageProps } }) {
 function MyApp({ session, Component, pageProps }) {
   return (
     <SessionProvider session={session}>
-      <ChakraProvider>
+      <ChakraProvider theme={retinaTema}>
         <StoreProvider>
           <Component {...pageProps} />
         </StoreProvider>

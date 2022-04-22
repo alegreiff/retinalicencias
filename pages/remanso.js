@@ -1,40 +1,100 @@
-import { Box, SimpleGrid } from '@chakra-ui/react';
+import { Badge, Box, Center, SimpleGrid, Text } from '@chakra-ui/react';
 import orderBy from 'lodash/orderBy';
 import { useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { Wrapper } from '../components/Wrapper';
 import { fetcher } from '../lib';
-
+import Moment from 'moment';
+import Image from 'next/image';
+import { usePeliculas } from '../lib/hooks/usePeliculas';
 const RemansoPage = () => {
-  const URL =
+  /* const URL =
     'https://script.google.com/macros/s/AKfycbztzXBkzgYd4kgV3BAa1fi1-UQY8rgw4935BkyUt0-bEJJeTgrDHX1dIxqyzSDG03g/exec';
   const { data, error } = useSWR(URL, fetcher);
-  //console.log(data);
+    const URL_ENTRADAS_SALIDAS =
+    'https://script.google.com/macros/s/AKfycbxr1oxHPratNzgevO__yHbwXd4iQDrxVjOkW8eyI0qaC_xVAhBy_zYsiU933DXjFmuu/exec';
+  const { data: dataEntradas, error: errorEntradas } = useSWR(
+    URL_ENTRADAS_SALIDAS,
+    fetcher
+  ); */
+  const data = usePeliculas();
+
+  //console.log(data[158]);
+
   const [films, setFilms] = useState(null);
   useEffect(() => {
+    const paisesRetina = [
+      'Colombia',
+      'Bolivia',
+      'Ecuador',
+      'México',
+      'Uruguay',
+      'Perú',
+    ];
     if (data) {
-      const pelis = orderBy(data.datos, ['titulo'], ['asc']);
+      const pelis = data;
+      //const pelis = orderBy(data.datos, ['pais'], ['asc']);
+      //let pelis = data.filter((film) => paisesRetina.includes(film.pais));
+      //pelis = orderBy(pelis, ['pais'], ['asc']);
       setFilms(pelis);
     }
-  }, [data]);
+  }, []);
 
   if (!films) {
-    return <>Errare</>;
+    return <Wrapper>C A R G A N D O</Wrapper>;
   }
+  //console.log(films[0]);
   return (
     <Wrapper>
-      <SimpleGrid minChildWidth='222px' spacing='40px'>
+      <SimpleGrid minChildWidth='81px' spacing='5px'>
         {films &&
-          films.map((peli) => (
-            <Box
-              bg={peli.pais === 'Colombia' ? 'yellow' : 'grey'}
-              key={peli.id}
-              height='120px'
-              padding={5}
-            >
-              {peli.titulo}
-            </Box>
-          ))}
+          films.map(
+            (peli, index) =>
+              index < 2000 && (
+                <Box
+                  borderRadius={50}
+                  border='5px solid'
+                  borderColor='transparent'
+                  bg={
+                    peli.pais === 'Colombia'
+                      ? 'retina.colombia'
+                      : peli.pais === 'Uruguay'
+                      ? 'retina.uruguay'
+                      : peli.pais === 'Perú'
+                      ? 'retina.peru'
+                      : peli.pais === 'Bolivia'
+                      ? 'retina.bolivia'
+                      : peli.pais === 'Ecuador'
+                      ? 'retina.ecuador'
+                      : peli.pais === 'México'
+                      ? 'retina.mexico'
+                      : 'polla.negro'
+                  }
+                  key={peli.id}
+                  height='26px'
+                  //padding={0}
+                >
+                  {/* <Badge> {peli.pais} </Badge> */}
+                  <Center>
+                    <Text> {peli.entradas.length} </Text>
+                    {/* <Text>{peli.visitas.total}</Text> */}
+                    {/* <Text
+                      padding={2}
+                      borderRadius={50}
+                      color='polla.lux'
+                      fontWeight='extrabold'
+                      fontSize={30}
+                      backgroundColor='red'
+                    >
+                      {Moment(peli.estrenooriginal)
+                        .format('YY')
+                        .toString()
+                        .charAt(1)}
+                    </Text> */}
+                  </Center>
+                </Box>
+              )
+          )}
       </SimpleGrid>
     </Wrapper>
   );
@@ -43,6 +103,10 @@ const RemansoPage = () => {
 export default RemansoPage;
 
 /* 
+
+const fecha = Moment(peli.estrenooriginal, 'DD-MM-YYYY HH:mm').format(
+        'MMMM D, YYYY'
+      );
 {
     "id": 1,
     "wpid": 324,
