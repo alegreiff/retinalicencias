@@ -24,7 +24,7 @@ import 'moment/locale/es';
 export default function Home({ licencias, datosBasicos }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
-  const [version, setVersion] = useState('0.81');
+  const [version, setVersion] = useState('0.82');
 
   //console.log(session);
   //console.log(status);
@@ -60,7 +60,7 @@ export default function Home({ licencias, datosBasicos }) {
           <link rel='icon' href='/favicon.ico' />
         </Head>
         <Wrapper>
-          <Box bg='purple' w='100%' p={4} color='white'>
+          <Box bg='crimson' w='100%' p={4} color='white'>
             Versión {version}
           </Box>
           <Center color='white' height='50vh'>
@@ -79,7 +79,7 @@ export default function Home({ licencias, datosBasicos }) {
   }
   return (
     <Wrapper>
-      <Box bg='purple' w='100%' p={4} color='white'>
+      <Box bg='crimson' w='100%' p={4} color='white'>
         Versión {version}
       </Box>
       <Center color='white' height='50vh'>

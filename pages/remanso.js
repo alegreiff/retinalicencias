@@ -33,6 +33,7 @@ const RemansoPage = () => {
     ];
     if (data) {
       const pelis = data;
+      pelis = orderBy(pelis, ['ranking'], ['desc']);
       //const pelis = orderBy(data.datos, ['pais'], ['asc']);
       //let pelis = data.filter((film) => paisesRetina.includes(film.pais));
       //pelis = orderBy(pelis, ['pais'], ['asc']);
@@ -43,42 +44,45 @@ const RemansoPage = () => {
   if (!films) {
     return <Wrapper>C A R G A N D O</Wrapper>;
   }
-  //console.log(films[0]);
+  console.log(films[0]);
   return (
     <Wrapper>
-      <SimpleGrid minChildWidth='81px' spacing='5px'>
+      <SimpleGrid minChildWidth='300px' spacing='5px'>
         {films &&
-          films.map(
-            (peli, index) =>
-              index < 2000 && (
-                <Box
-                  borderRadius={50}
-                  border='5px solid'
-                  borderColor='transparent'
-                  bg={
-                    peli.pais === 'Colombia'
-                      ? 'retina.colombia'
-                      : peli.pais === 'Uruguay'
-                      ? 'retina.uruguay'
-                      : peli.pais === 'Perú'
-                      ? 'retina.peru'
-                      : peli.pais === 'Bolivia'
-                      ? 'retina.bolivia'
-                      : peli.pais === 'Ecuador'
-                      ? 'retina.ecuador'
-                      : peli.pais === 'México'
-                      ? 'retina.mexico'
-                      : 'polla.negro'
-                  }
-                  key={peli.id}
-                  height='26px'
-                  //padding={0}
-                >
-                  {/* <Badge> {peli.pais} </Badge> */}
-                  <Center>
-                    <Text> {peli.entradas.length} </Text>
-                    {/* <Text>{peli.visitas.total}</Text> */}
-                    {/* <Text
+          films.map((peli, index) => (
+            <Box
+              borderRadius={50}
+              border='5px solid'
+              borderColor='transparent'
+              bg={
+                peli.pais === 'Colombia'
+                  ? 'retina.colombia'
+                  : peli.pais === 'Uruguay'
+                  ? 'retina.uruguay'
+                  : peli.pais === 'Perú'
+                  ? 'retina.peru'
+                  : peli.pais === 'Bolivia'
+                  ? 'retina.bolivia'
+                  : peli.pais === 'Ecuador'
+                  ? 'retina.ecuador'
+                  : peli.pais === 'México'
+                  ? 'retina.mexico'
+                  : 'polla.negro'
+              }
+              key={peli.id}
+              height='250px'
+              //padding={0}
+            >
+              {/* <Badge> {peli.pais} </Badge> */}
+              <Center padding={10} margin={5} backgroundColor='polla.negro'>
+                <div>
+                  <Text> {peli.titulo} </Text>
+                </div>
+                <div>
+                  <Badge> {peli.ranking} </Badge>
+                </div>
+                {/* <Text>{peli.visitas.total}</Text> */}
+                {/* <Text
                       padding={2}
                       borderRadius={50}
                       color='polla.lux'
@@ -91,10 +95,9 @@ const RemansoPage = () => {
                         .toString()
                         .charAt(1)}
                     </Text> */}
-                  </Center>
-                </Box>
-              )
-          )}
+              </Center>
+            </Box>
+          ))}
       </SimpleGrid>
     </Wrapper>
   );
