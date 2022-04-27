@@ -5,11 +5,15 @@ import { useRouter } from 'next/router';
 import React, { useContext, useEffect, useState } from 'react';
 import useSWR from 'swr';
 import { fetcher } from '../lib';
+import { onChangeTipoContenido } from '../lib/formulario';
 import { mapeaLicencia } from '../lib/mapealicencia';
 import { ACTION_TYPES, StoreContext } from '../store';
 import { FormularioLicencias } from './forms/FormularioLicencias';
 
 export const EditaLicencia = ({ licencia, cierra }) => {
+  const { isOpen, onOpen, onClose } = useDisclosure();
+  const router = useRouter();
+  const toast = useToast();
   const stringToDate = (dateString) => {
     const [day, month, year] = dateString.split('/');
     return new Date([month, day, year].join('/'));
@@ -62,9 +66,6 @@ export const EditaLicencia = ({ licencia, cierra }) => {
     }
   }, [session?.user?.email]);
 
-  const { isOpen, onOpen, onClose } = useDisclosure();
-  const router = useRouter();
-  const toast = useToast();
   const exitoCarga = (mensaje, nota, status) => {
     toast({
       title: `Modificación  de licencia: ${nota}`,
@@ -352,10 +353,16 @@ export const EditaLicencia = ({ licencia, cierra }) => {
       setMuestraFechas(false);
     }
   }, [detalleFechas]);
+
   return (
     <Box>
+      {/* <h4>Hola {pais}</h4>
       {(pais, id)}
+      <h6>Mi {id} país</h6> */}
+
       <FormularioLicencias
+        datosLicencias={datosLicencias}
+        retinaPaises={retinaPaises}
         valoresInicialesFormulario={valoresInicialesFormulario}
         tipoCont={tipoCont}
         formAdq={formAdq}
@@ -383,6 +390,7 @@ export const EditaLicencia = ({ licencia, cierra }) => {
         esEdicion={true}
         onChangeDuracionLicencia={onChangeDuracionLicencia}
         detalleFechas={detalleFechas}
+        onChangeTipoContenido={onChangeTipoContenido}
       />
     </Box>
   );

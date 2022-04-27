@@ -6,6 +6,7 @@ export const ACTION_TYPES = {
   SET_LICENCIAS: 'SET_LICENCIAS',
   SET_DATOS_BASICOS: 'SET_DATOS_BASICOS',
   MODIFICA_LICENCIA: 'MODIFICA_LICENCIA',
+  GUARDA_PELIS: 'GUARDA_PELIS',
 };
 
 const storeReducer = (state, action) => {
@@ -19,6 +20,9 @@ const storeReducer = (state, action) => {
     }
     case ACTION_TYPES.SET_DATOS_BASICOS: {
       return { ...state, datosLicencias: action.payload.datosLicencias };
+    }
+    case ACTION_TYPES.GUARDA_PELIS: {
+      return { ...state, peliculas: action.payload.peliculas };
     }
     case ACTION_TYPES.MODIFICA_LICENCIA: {
       const id = action.payload.id;
@@ -39,6 +43,7 @@ const StoreProvider = ({ children }) => {
   const initialState = {
     licencias: [],
     datosLicencias: [],
+    peliculas: [],
     elementosMenu: [
       ['/nueva', 'Crear nueva licencia'],
       ['/licencias', 'Licencias'],

@@ -7,12 +7,11 @@ import { fetcher } from '../lib';
 import { Wrapper } from '../components/Wrapper';
 import { Modal, ModalOverlay, useDisclosure } from '@chakra-ui/react';
 import Head from 'next/head';
-
 import { useToast } from '@chakra-ui/react';
-
 import { useRouter } from 'next/router';
 import { EntidadGratuitaNueva } from '../components/licencias/EntidadGratuitaNueva';
 import { FormularioLicencias } from '../components/forms/FormularioLicencias';
+import { onChangeTipoContenido } from '../lib/formulario';
 
 const PageSettings = (props) => {
   const { data: session } = useSession();
@@ -180,6 +179,7 @@ const PageSettings = (props) => {
       setPaises(datosLicencias[0]);
     }
   };
+
   const onChangePais = (value) => {
     if (retinaPaises.includes(value)) {
       switch (value) {
@@ -271,6 +271,8 @@ const PageSettings = (props) => {
         </Modal>
 
         <FormularioLicencias
+          datosLicencias={datosLicencias}
+          retinaPaises={retinaPaises}
           valoresInicialesFormulario={valoresInicialesFormulario}
           tipoCont={tipoCont}
           formAdq={formAdq}
@@ -295,6 +297,7 @@ const PageSettings = (props) => {
           muestraFechas={muestraFechas}
           onChangeDuracionLicencia={onChangeDuracionLicencia}
           detalleFechas={detalleFechas}
+          onChangeTipoContenido={onChangeTipoContenido}
         />
       </Wrapper>
     </>

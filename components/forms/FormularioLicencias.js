@@ -28,6 +28,8 @@ import { validaCreaPelicula } from '../../lib/validaForms';
 registerLocale('es', es);
 
 export const FormularioLicencias = ({
+  datosLicencias,
+  retinaPaises,
   valoresInicialesFormulario,
   tipoCont,
   formAdq,
@@ -53,6 +55,7 @@ export const FormularioLicencias = ({
   muestraFechas,
   onChangeDuracionLicencia,
   detalleFechas,
+  onChangeTipoContenido,
   //edicionEntidadPais = false,
   //entidadpaisselected = null,
 }) => {
@@ -93,13 +96,6 @@ export const FormularioLicencias = ({
           <Heading>Licencia</Heading>
           <span> {detalleFechas} </span>
 
-          <CampoTexto
-            name='nombrepelicula'
-            id='nombrepelicula'
-            label='Nombre de la película'
-            placeholder='Nombre de la película'
-          />
-
           <SimpleGrid
             w={{ base: '90%', md: 900 }}
             columns={[1, 2, 3]}
@@ -111,6 +107,10 @@ export const FormularioLicencias = ({
               label='Tipo de Contenido'
               datos={tipoCont}
               placeholder='Seleccione'
+              onChange={(e) => {
+                formik.handleChange(e);
+                onChangeTipoContenido(e.target.value, datosLicencias);
+              }}
             />
             <CampoSelect
               name='formaAdquisicion'
@@ -138,6 +138,12 @@ export const FormularioLicencias = ({
               }}
             />
           </SimpleGrid>
+          <CampoTexto
+            name='nombrepelicula'
+            id='nombrepelicula'
+            label='Nombre de la película'
+            placeholder='Nombre de la película'
+          />
           {listaEntidadesPais.length > 0 && entidadesPais && (
             <CampoSelect
               name='entidadpais'

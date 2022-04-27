@@ -1,6 +1,6 @@
 import { useSession, signIn, signOut } from 'next-auth/react';
 
-import { useContext, useState } from 'react';
+import { useContext, useState, useEffect } from 'react';
 import Head from 'next/head';
 import Image from 'next/image';
 import {
@@ -12,7 +12,7 @@ import {
 
 import styles from '../styles/Home.module.css';
 import { ACTION_TYPES, StoreContext } from '../store';
-import { useEffect } from 'react';
+
 import { Wrapper } from '../components/Wrapper';
 import { FaMailBulk } from 'react-icons/fa';
 import { Box, Button, Center } from '@chakra-ui/react';
@@ -20,14 +20,30 @@ import { Box, Button, Center } from '@chakra-ui/react';
 import orderBy from 'lodash/orderBy';
 import Moment from 'moment';
 import 'moment/locale/es';
+import { relacionEntradas } from '../lib/hooks/usePeliculas';
 
-export default function Home({ licencias, datosBasicos }) {
+export default function Home({ licencias, datosBasicos, pelis, entradas }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
   const [version, setVersion] = useState('0.82');
+  //const [filmes, setFilmes] = useState([]);
+
+  useEffect(() => {
+    if (pelis && entradas) {
+      const filmesTemp = relacionEntradas(pelis, entradas);
+      //setFilmes(filmesTemp);
+      dispatch({
+        type: ACTION_TYPES.GUARDA_PELIS,
+        payload: {
+          peliculas: filmesTemp,
+        },
+      });
+    }
+  }, [pelis, entradas, dispatch]);
 
   //console.log(session);
   //console.log(status);
+
   useEffect(() => {
     if (datosBasicos) {
       dispatch({
@@ -97,6 +113,17 @@ export default function Home({ licencias, datosBasicos }) {
 }
 
 export async function getServerSideProps() {
+  const url_peliculas =
+    'https://script.google.com/macros/s/AKfycbztzXBkzgYd4kgV3BAa1fi1-UQY8rgw4935BkyUt0-bEJJeTgrDHX1dIxqyzSDG03g/exec';
+  const datosPeliculas = await fetch(url_peliculas);
+  const pelis = await datosPeliculas.json();
+
+  const url_entradas =
+    'https://script.google.com/macros/s/AKfycbxr1oxHPratNzgevO__yHbwXd4iQDrxVjOkW8eyI0qaC_xVAhBy_zYsiU933DXjFmuu/exec';
+
+  const datosEntradas = await fetch(url_entradas);
+  const entradas = await datosEntradas.json();
+
   console.log('SERVER SAID POORGS');
   const auth = authGoogle;
   const spreadsheetId = hojaRetina;
@@ -163,6 +190,8 @@ export async function getServerSideProps() {
     props: {
       licencias: resultado,
       datosBasicos,
+      pelis: pelis,
+      entradas: entradas,
     },
   };
 }

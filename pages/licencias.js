@@ -21,7 +21,7 @@ import {
   useDisclosure,
 } from '@chakra-ui/react';
 import { TriangleDownIcon, TriangleUpIcon } from '@chakra-ui/icons';
-import { useTable, useSortBy } from 'react-table';
+import { useTable, useSortBy, useGlobalFilter, useFilters } from 'react-table';
 //import { authGoogle, googleSheets, hojaLicenciasRetina } from '../sheets';
 //import orderBy from 'lodash/orderBy';
 import Moment from 'moment';
@@ -29,6 +29,8 @@ import 'moment/locale/es';
 import { EditaLicencia } from '../components/EditaLicencia';
 import { useRouter } from 'next/router';
 import { StoreContext } from '../store';
+import { GlobalFilter } from '../components/tablas/GlobalFilter';
+import { ColumnFilter } from '../components/tablas/ColumnFilter';
 Moment.locale('es');
 
 const PageLicencias = () => {
@@ -63,6 +65,13 @@ const PageLicencias = () => {
   };
 
   const data2 = useMemo(() => resultado, [resultado]);
+  const defaultColumn = useMemo(
+    () => ({
+      // Let's set up our default Filter UI
+      Filter: ColumnFilter,
+    }),
+    []
+  );
   const columns2 = useMemo(
     () => [
       {
@@ -75,7 +84,7 @@ const PageLicencias = () => {
                 router.push(`/edicion/${original.id}`);
               }}
             >
-              Editar
+              Editar {original.id}
             </Button>
             {/* <Button
               colorScheme='teal'
@@ -88,20 +97,35 @@ const PageLicencias = () => {
           </>
         ),
         isNumeric: true,
+        Filter: false,
       },
-      { Header: 'Code', accessor: 'id' },
-      { Header: 'Creación', accessor: 'fechacreacion' },
+      /* { Header: 'Code', accessor: 'id', Filter: false }, */
+      { Header: 'Creación', accessor: 'fechacreacion', Filter: false },
       //{ Header: "Autor", accessor: "autor" },
-      { Header: 'Película', accessor: 'nombrepelicula' },
+      { Header: 'Película', accessor: 'nombrepelicula', Filter: ColumnFilter },
       { Header: 'País', accessor: 'pais' },
       //{ Header: "Tipo", accessor: "tipocontenido" },
-      { Header: 'Adquisición', accessor: 'formaAdquisicion' },
+      { Header: 'Adquisición', accessor: 'formaAdquisicion', Filter: false },
     ],
     []
   );
 
-  const { getTableProps, getTableBodyProps, headerGroups, rows, prepareRow } =
-    useTable({ columns: columns2, data: data2 }, useSortBy);
+  const {
+    getTableProps,
+    getTableBodyProps,
+    headerGroups,
+    rows,
+    prepareRow,
+    state,
+    setGlobalFilter,
+  } = useTable(
+    { columns: columns2, data: data2, defaultColumn },
+    useFilters,
+    useGlobalFilter,
+    useSortBy
+  );
+
+  const { globalFilter } = state;
   return (
     <>
       <Wrapper>
@@ -131,50 +155,59 @@ const PageLicencias = () => {
             </DrawerFooter>
           </DrawerContent>
         </Drawer>
-        <Table {...getTableProps()}>
-          <Thead>
-            {headerGroups.map((headerGroup, a) => (
-              <Tr key={a} {...headerGroup.getHeaderGroupProps()}>
-                {headerGroup.headers.map((column, b) => (
-                  <Th
-                    key={b}
-                    {...column.getHeaderProps(column.getSortByToggleProps())}
-                    isNumeric={column.isNumeric}
-                  >
-                    {column.render('Header')}
-                    <chakra.span pl='4'>
-                      {column.isSorted ? (
-                        column.isSortedDesc ? (
-                          <TriangleDownIcon aria-label='sorted descending' />
-                        ) : (
-                          <TriangleUpIcon aria-label='sorted ascending' />
-                        )
-                      ) : null}
-                    </chakra.span>
-                  </Th>
+        <>
+          <GlobalFilter filter={globalFilter} setFilter={setGlobalFilter}>
+            <Table {...getTableProps()}>
+              <Thead>
+                {headerGroups.map((headerGroup, a) => (
+                  <Tr key={a} {...headerGroup.getHeaderGroupProps()}>
+                    {headerGroup.headers.map((column, b) => (
+                      <Th
+                        key={b}
+                        {...column.getHeaderProps(
+                          column.getSortByToggleProps()
+                        )}
+                        isNumeric={column.isNumeric}
+                      >
+                        {column.render('Header')}
+                        <div>
+                          {column.canFilter ? column.render('Filter') : null}
+                        </div>
+                        <chakra.span pl='4'>
+                          {column.isSorted ? (
+                            column.isSortedDesc ? (
+                              <TriangleDownIcon aria-label='sorted descending' />
+                            ) : (
+                              <TriangleUpIcon aria-label='sorted ascending' />
+                            )
+                          ) : null}
+                        </chakra.span>
+                      </Th>
+                    ))}
+                  </Tr>
                 ))}
-              </Tr>
-            ))}
-          </Thead>
-          <Tbody {...getTableBodyProps()}>
-            {rows.map((row, c) => {
-              prepareRow(row);
-              return (
-                <Tr key={c} {...row.getRowProps()}>
-                  {row.cells.map((cell, d) => (
-                    <Td
-                      key={d}
-                      {...cell.getCellProps()}
-                      isNumeric={cell.column.isNumeric}
-                    >
-                      {cell.render('Cell')}
-                    </Td>
-                  ))}
-                </Tr>
-              );
-            })}
-          </Tbody>
-        </Table>
+              </Thead>
+              <Tbody {...getTableBodyProps()}>
+                {rows.map((row, c) => {
+                  prepareRow(row);
+                  return (
+                    <Tr key={c} {...row.getRowProps()}>
+                      {row.cells.map((cell, d) => (
+                        <Td
+                          key={d}
+                          {...cell.getCellProps()}
+                          isNumeric={cell.column.isNumeric}
+                        >
+                          {cell.render('Cell')}
+                        </Td>
+                      ))}
+                    </Tr>
+                  );
+                })}
+              </Tbody>
+            </Table>
+          </GlobalFilter>
+        </>
         {activo && <span>{activo.nombrepelicula}</span>}
       </Wrapper>
     </>
