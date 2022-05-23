@@ -25,7 +25,7 @@ import { relacionEntradas } from '../lib/hooks/usePeliculas';
 export default function Home({ licencias, datosBasicos, pelis, entradas }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
-  const [version, setVersion] = useState('0.82');
+  const [version, setVersion] = useState('0.83AQ');
   //const [filmes, setFilmes] = useState([]);
 
   useEffect(() => {
