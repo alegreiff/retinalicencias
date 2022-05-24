@@ -95,13 +95,8 @@ export const FormularioLicencias = ({
         >
           <Heading>Licencia</Heading>
           <span> {detalleFechas} </span>
-
-          <SimpleGrid
-            w={{ base: '90%', md: 900 }}
-            columns={[1, 2, 3]}
-            spacing={10}
-          >
-            <CampoSelect
+          <SimpleGrid>
+          <CampoSelect
               name='tipocontenido'
               id='tipocontenido'
               label='Tipo de Contenido'
@@ -112,6 +107,13 @@ export const FormularioLicencias = ({
                 onChangeTipoContenido(e.target.value, datosLicencias);
               }}
             />
+          </SimpleGrid>
+          <SimpleGrid
+            w={{ base: '90%', md: 900 }}
+            columns={[1, 2, 3]}
+            spacing={10}
+          >
+            
             <CampoSelect
               name='formaAdquisicion'
               id='formaAdquisicion'
