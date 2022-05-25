@@ -23,7 +23,7 @@ import { usePeliculas } from "../lib/hooks/usePeliculas";
 export default function Home({ licencias, datosBasicos, pelis, entradas }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
-  const [version, setVersion] = useState("0.83AQ");
+  const [version, setVersion] = useState("0.84 🧩🧩🧩");
 
   const dataPeliculas = usePeliculas();
 
