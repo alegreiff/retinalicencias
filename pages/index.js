@@ -1,40 +1,50 @@
-import { useSession, signIn, signOut } from 'next-auth/react';
+import { useSession, signIn, signOut } from "next-auth/react";
 
-import { useContext, useState, useEffect } from 'react';
-import Head from 'next/head';
+import { useContext, useState, useEffect } from "react";
+import Head from "next/head";
 import {
   authGoogle,
   hojaRetina,
   googleSheets,
   hojaLicenciasRetina,
-} from '../sheets';
+} from "../sheets";
 
-import styles from '../styles/Home.module.css';
-import { ACTION_TYPES, StoreContext } from '../store';
+import { ACTION_TYPES, StoreContext } from "../store";
 
-import { Wrapper } from '../components/Wrapper';
-import { FaMailBulk } from 'react-icons/fa';
-import { Box, Button, Center } from '@chakra-ui/react';
+import { Wrapper } from "../components/Wrapper";
+import { FaMailBulk } from "react-icons/fa";
+import { Box, Button, Center } from "@chakra-ui/react";
 
-import orderBy from 'lodash/orderBy';
-import Moment from 'moment';
-import 'moment/locale/es';
-import { relacionEntradas } from '../lib/hooks/usePeliculas';
-
+import orderBy from "lodash/orderBy";
+import Moment from "moment";
+import "moment/locale/es";
+//import { relacionEntradas } from "../lib/hooks/usePeliculas";
+import { usePeliculas } from "../lib/hooks/usePeliculas";
 export default function Home({ licencias, datosBasicos, pelis, entradas }) {
   const { dispatch } = useContext(StoreContext);
   const { data: session, status } = useSession();
-  const [version, setVersion] = useState('0.83AQ');
-  //const [filmes, setFilmes] = useState([]);
+  const [version, setVersion] = useState("0.83AQ");
 
+  const dataPeliculas = usePeliculas();
+
+  if (dataPeliculas) {
+    console.log("Datos de películas cargados correctamente");
+  }
+  /**
+   *
+   * TODO: pendiente
+   * !por revisar
+   * ?puede esperar
+   * *pero es importante
+   */
   useEffect(() => {
-    if (pelis && entradas) {
-      const filmesTemp = relacionEntradas(pelis, entradas);
+    if (dataPeliculas) {
+      //const filmesTemp = relacionEntradas(pelis, entradas);
       //setFilmes(filmesTemp);
       dispatch({
         type: ACTION_TYPES.GUARDA_PELIS,
         payload: {
-          peliculas: filmesTemp,
+          peliculas: dataPeliculas,
         },
       });
     }
@@ -69,20 +79,21 @@ export default function Home({ licencias, datosBasicos, pelis, entradas }) {
         <Head>
           <title>Licencias Retina Latina</title>
           <meta
-            name='description'
-            content='Aplicación para uso exclusivo de Retina Latina'
+            name="description"
+            content="Aplicación para uso exclusivo de Retina Latina"
           />
-          <link rel='icon' href='/favicon.ico' />
+          <link rel="icon" href="/favicon.ico" />
         </Head>
         <Wrapper>
-          <Box bg='crimson' w='100%' p={4} color='white'>
+          {pelis && <div> {pelis.length} </div>}
+          <Box bg="crimson" w="100%" p={4} color="white">
             Versión {version}
           </Box>
-          <Center color='white' height='50vh'>
+          <Center color="white" height="50vh">
             <Button
               rightIcon={<FaMailBulk />}
-              colorScheme='teal'
-              variant='outline'
+              colorScheme="teal"
+              variant="outline"
               onClick={() => signOut()}
             >
               Cerrar sesión
@@ -94,14 +105,14 @@ export default function Home({ licencias, datosBasicos, pelis, entradas }) {
   }
   return (
     <Wrapper>
-      <Box bg='crimson' w='100%' p={4} color='white'>
+      <Box bg="crimson" w="100%" p={4} color="white">
         Versión {version}
       </Box>
-      <Center color='white' height='50vh'>
+      <Center color="white" height="50vh">
         <Button
           rightIcon={<FaMailBulk />}
-          colorScheme='teal'
-          variant='outline'
+          colorScheme="teal"
+          variant="outline"
           onClick={() => signIn()}
         >
           Ingreso a la plataforma de Licencias
@@ -112,31 +123,31 @@ export default function Home({ licencias, datosBasicos, pelis, entradas }) {
 }
 
 export async function getServerSideProps() {
-  const url_peliculas =
-    'https://script.google.com/macros/s/AKfycbztzXBkzgYd4kgV3BAa1fi1-UQY8rgw4935BkyUt0-bEJJeTgrDHX1dIxqyzSDG03g/exec';
+  /* const url_peliculas =
+    "https://script.google.com/macros/s/AKfycbztzXBkzgYd4kgV3BAa1fi1-UQY8rgw4935BkyUt0-bEJJeTgrDHX1dIxqyzSDG03g/exec";
   const datosPeliculas = await fetch(url_peliculas);
   const pelis = await datosPeliculas.json();
 
   const url_entradas =
-    'https://script.google.com/macros/s/AKfycbxr1oxHPratNzgevO__yHbwXd4iQDrxVjOkW8eyI0qaC_xVAhBy_zYsiU933DXjFmuu/exec';
+    "https://script.google.com/macros/s/AKfycbxr1oxHPratNzgevO__yHbwXd4iQDrxVjOkW8eyI0qaC_xVAhBy_zYsiU933DXjFmuu/exec";
 
   const datosEntradas = await fetch(url_entradas);
-  const entradas = await datosEntradas.json();
+  const entradas = await datosEntradas.json(); */
 
-  console.log('SERVER SAID POORGS');
+  console.log("SERVER SAID POORGS");
   const auth = authGoogle;
   const spreadsheetId = hojaRetina;
   const cargaDatosBasicos = await googleSheets.spreadsheets.values.get({
     auth,
-    majorDimension: 'COLUMNS',
+    majorDimension: "COLUMNS",
     spreadsheetId: hojaLicenciasRetina,
-    range: 'settings!A2:Z',
+    range: "settings!A2:Z",
   });
 
   const cargaLicencias = await googleSheets.spreadsheets.values.get({
     auth,
     spreadsheetId: hojaLicenciasRetina,
-    range: 'matriz!A2:O',
+    range: "matriz!A2:O",
   });
 
   const datosBasicos = cargaDatosBasicos.data.values;
@@ -146,17 +157,17 @@ export async function getServerSideProps() {
     : [];
 
   let resultado = [];
-  const y = Moment('13-03-2022 0:00', 'DD-MM-YYYY HH:mm').format(
-    'MMMM D, YYYY HH:MM'
+  const y = Moment("13-03-2022 0:00", "DD-MM-YYYY HH:mm").format(
+    "MMMM D, YYYY HH:MM"
   );
 
   licencias.forEach((licencia) => {
-    const fecha = Moment(licencia[1], 'DD-MM-YYYY HH:mm').format(
-      'MMMM D, YYYY'
+    const fecha = Moment(licencia[1], "DD-MM-YYYY HH:mm").format(
+      "MMMM D, YYYY"
     );
-    let entidadpais = '';
-    let entidadgratis = '';
-    if (licencia[6] === 'Compra') {
+    let entidadpais = "";
+    let entidadgratis = "";
+    if (licencia[6] === "Compra") {
       entidadpais = licencia[7];
     } else {
       entidadgratis = licencia[7];
@@ -172,25 +183,25 @@ export async function getServerSideProps() {
       formaAdquisicion: licencia[6],
       entidad: licencia[7],
       geobloqueo: licencia[8],
-      mododuracion: licencia[9] ? licencia[9] : '',
-      comentarios: licencia[14] ? licencia[14] : '',
-      startDate: licencia[10] ? licencia[10] : '',
-      endDate: licencia[11] ? licencia[11] : '',
-      nombreduracion: licencia[12] ? licencia[12] : '',
-      numeroduracion: licencia[13] ? licencia[13] : '',
+      mododuracion: licencia[9] ? licencia[9] : "",
+      comentarios: licencia[14] ? licencia[14] : "",
+      startDate: licencia[10] ? licencia[10] : "",
+      endDate: licencia[11] ? licencia[11] : "",
+      nombreduracion: licencia[12] ? licencia[12] : "",
+      numeroduracion: licencia[13] ? licencia[13] : "",
       entidadpais: entidadpais,
       entidadgratis: entidadgratis,
     });
   });
-  resultado = orderBy(resultado, ['fechacreacion'], ['desc']);
+  resultado = orderBy(resultado, ["fechacreacion"], ["desc"]);
 
   // Pass data to the page via props
   return {
     props: {
       licencias: resultado,
       datosBasicos,
-      pelis: pelis,
-      entradas: entradas,
+      //pelis: pelis,
+      //entradas: entradas,
     },
   };
 }

@@ -1,23 +1,11 @@
 import { Badge, Box, Center, SimpleGrid, Text } from '@chakra-ui/react';
 import orderBy from 'lodash/orderBy';
 import { useEffect, useState } from 'react';
-import useSWR from 'swr';
 import { Wrapper } from '../components/Wrapper';
-import { fetcher } from '../lib';
-import Moment from 'moment';
-import Image from 'next/image';
+
 import { usePeliculas } from '../lib/hooks/usePeliculas';
 const RemansoPage = () => {
-  /* const URL =
-    'https://script.google.com/macros/s/AKfycbztzXBkzgYd4kgV3BAa1fi1-UQY8rgw4935BkyUt0-bEJJeTgrDHX1dIxqyzSDG03g/exec';
-  const { data, error } = useSWR(URL, fetcher);
-    const URL_ENTRADAS_SALIDAS =
-    'https://script.google.com/macros/s/AKfycbxr1oxHPratNzgevO__yHbwXd4iQDrxVjOkW8eyI0qaC_xVAhBy_zYsiU933DXjFmuu/exec';
-  const { data: dataEntradas, error: errorEntradas } = useSWR(
-    URL_ENTRADAS_SALIDAS,
-    fetcher
-  ); */
-  const data = usePeliculas();
+const data = usePeliculas();
 
   //console.log(data[158]);
 
@@ -34,9 +22,6 @@ const RemansoPage = () => {
     if (data) {
       const pelis = data;
       pelis = orderBy(pelis, ['ranking'], ['desc']);
-      //const pelis = orderBy(data.datos, ['pais'], ['asc']);
-      //let pelis = data.filter((film) => paisesRetina.includes(film.pais));
-      //pelis = orderBy(pelis, ['pais'], ['asc']);
       setFilms(pelis);
     }
   }, []);

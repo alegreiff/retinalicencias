@@ -1,12 +1,12 @@
-import { createContext, useReducer } from 'react';
+import { createContext, useReducer } from "react";
 export const StoreContext = createContext();
 
 export const ACTION_TYPES = {
-  SET_MENU_ITEMS: 'SET_MENU_ITEMS',
-  SET_LICENCIAS: 'SET_LICENCIAS',
-  SET_DATOS_BASICOS: 'SET_DATOS_BASICOS',
-  MODIFICA_LICENCIA: 'MODIFICA_LICENCIA',
-  GUARDA_PELIS: 'GUARDA_PELIS',
+  SET_MENU_ITEMS: "SET_MENU_ITEMS",
+  SET_LICENCIAS: "SET_LICENCIAS",
+  SET_DATOS_BASICOS: "SET_DATOS_BASICOS",
+  MODIFICA_LICENCIA: "MODIFICA_LICENCIA",
+  GUARDA_PELIS: "GUARDA_PELIS",
 };
 
 const storeReducer = (state, action) => {
@@ -14,7 +14,6 @@ const storeReducer = (state, action) => {
     case ACTION_TYPES.SET_MENU_ITEMS: {
       return { ...state, elementosMenu: action.payload.elementosMenu };
     }
-
     case ACTION_TYPES.SET_LICENCIAS: {
       return { ...state, licencias: action.payload.licencias };
     }
@@ -45,9 +44,9 @@ const StoreProvider = ({ children }) => {
     datosLicencias: [],
     peliculas: [],
     elementosMenu: [
-      ['/nueva', 'Crear nueva licencia'],
-      ['/licencias', 'Licencias'],
-      ['/remanso', 'Test'],
+      ["/nueva", "Crear nueva licencia"],
+      ["/licencias", "Licencias"],
+      ["/remanso", "Test"],
     ],
   };
   const [state, dispatch] = useReducer(storeReducer, initialState);
